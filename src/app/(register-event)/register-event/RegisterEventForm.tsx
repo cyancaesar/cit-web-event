@@ -41,15 +41,13 @@ import EventSchema from '@/lib/schema/EventSchema';
 import { registerEvent } from '@/action/event';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import Link from 'next/link';
 
 const items_1 = [
   {
@@ -871,6 +869,9 @@ export default function RegisterEventForm() {
           </div>
 
           <Button type='submit'>تسجيل الفعالية</Button>
+          <Button variant='secondary' type='button' asChild>
+            <Link href='/'>خروج</Link>
+          </Button>
         </form>
       </Form>
       <AlertDialog open={open} onOpenChange={setOpen}>

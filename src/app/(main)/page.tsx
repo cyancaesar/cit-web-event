@@ -1,16 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className='w-full lg:grid lg:grid-cols-2 min-h-screen'>
-      <div className='flex items-center justify-center py-12'>
-        <div className='mx-auto grid w-[350px] gap-8'>
+    <main className='w-full md:grid md:grid-cols-2 min-h-screen'>
+      <div className='flex items-center justify-center py-12 border-l-4 border-tu-primary'>
+        <div className='mx-auto grid w-[350px] gap-8 z-20'>
           <div className='grid gap-2 text-center'>
-            <h1 className='text-3xl'>أنشطة الأندية الطلابية</h1>
+            <h1 className='text-3xl flex items-center gap-2 tracking-tight justify-center'>
+              أنشطة الأندية الطلابية
+            </h1>
             <p className='text-balance text-muted-foreground'>
               خدمات لجنة الأنشطة الطلابية بكلية الحاسبات وتقنية المعلومات
             </p>
@@ -18,10 +19,19 @@ export default function Home() {
           <Separator />
           <div className='grid gap-1.5'>
             <Button asChild>
-              <Link href='/register-event'>تسجيل فعالية</Link>
+              <Link className='font-bold' href='/register-event'>
+                تسجيل الفعاليات
+              </Link>
             </Button>
             <Button asChild>
-              <Link href='#'>إصدار تقرير</Link>
+              <Link className='font-bold' href='/events'>
+                الفعاليات المسجلة
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link className='font-bold' href='#'>
+                إصدار التقارير
+              </Link>
             </Button>
           </div>
         </div>
