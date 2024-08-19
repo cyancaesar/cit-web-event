@@ -1,0 +1,53 @@
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+
+import Image from 'next/image';
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <main className='w-full lg:grid lg:grid-cols-2 min-h-screen'>
+      <div className='flex items-center justify-center py-12'>
+        <div className='mx-auto grid w-[350px] gap-8'>
+          <div className='grid gap-2 text-center'>
+            <h1 className='text-3xl'>أنشطة الأندية الطلابية</h1>
+            <p className='text-balance text-muted-foreground'>
+              خدمات لجنة الأنشطة الطلابية بكلية الحاسبات وتقنية المعلومات
+            </p>
+          </div>
+          <Separator />
+          <div className='grid gap-1.5'>
+            <Button asChild>
+              <Link href='/register-event'>تسجيل فعالية</Link>
+            </Button>
+            <Button asChild>
+              <Link href='#'>إصدار تقرير</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className='hidden lg:flex relative flex-col justify-center items-center'>
+        <div className='z-20 flex flex-col text-3xl items-center text-tu-primary'>
+          <Image
+            className='py-4'
+            src='/assets/logo.png'
+            width={170}
+            height={170}
+            alt='TU logo'
+          />
+          <div className='text-center space-y-1.5 py-4'>
+            <div className='font-medium'>جامعة الطائف</div>
+            <div className='font-medium'>كلية الحاسبات وتقنية المعلومات</div>
+            <div className='font-medium'>لجنة الأنشطة الطلابية</div>
+          </div>
+        </div>
+        <div
+          className='absolute w-full h-full'
+          style={{
+            backgroundImage: "url('/assets/pattern.png')",
+          }}
+        ></div>
+      </div>
+    </main>
+  );
+}
