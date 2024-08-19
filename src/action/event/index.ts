@@ -17,7 +17,7 @@ export async function registerEvent(data: unknown) {
       acadAffairsPlan: JSON.stringify(event.items_1),
       univStratPlan: JSON.stringify(event.items_2),
       tuga: JSON.stringify(event.items_3),
-      advertisementProcess: event.advertisementProcess,
+      advertisementProcess: JSON.stringify(event.advertisementProcess),
       category: event.category,
       department: JSON.stringify(event.departments),
       enhancePriority: event.enhancePriority,
@@ -43,8 +43,6 @@ export async function registerEvent(data: unknown) {
       date_to: event.date.to,
     },
   });
-
-  console.log(result.data);
 
   return { sucess: true, error: 'تم تسجيل الفعالية بنجاح' };
 }

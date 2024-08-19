@@ -18,8 +18,14 @@ const EventSchema = z.object({
   place: z.string(),
   time: z.string(),
   targetAudience: z.string(),
-  registrationProcess: z.string(),
-  advertisementProcess: z.string(),
+  registrationProcess: z.enum(['ONLINE', 'ON-CAMPUS'], {
+    required_error: 'يجب إختيار آلية التسجيل',
+  }),
+  advertisementProcess: z
+    .array(z.string())
+    .refine((value) => value.some((item) => item), {
+      message: 'يجب أن تختار على الأقل خانة واحدة.',
+    }),
   instructorsAndGuests: z.string(),
   maleAttendees: z.coerce.number().min(0).max(100000),
   femaleAttendees: z.coerce.number().min(0).max(100000),

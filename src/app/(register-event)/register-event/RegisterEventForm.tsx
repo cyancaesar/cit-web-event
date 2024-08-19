@@ -174,6 +174,17 @@ const departments = [
   },
 ];
 
+const advertisementProcess = [
+  {
+    id: 'EMAIL',
+    label: 'الإيميل الجامعي',
+  },
+  {
+    id: 'SOCIAL_MEDIA_PLATFORM',
+    label: 'منصات التواصل الإجتماعي',
+  },
+];
+
 export default function RegisterEventForm() {
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
@@ -192,8 +203,7 @@ export default function RegisterEventForm() {
       place: '',
       time: '',
       targetAudience: '',
-      registrationProcess: '',
-      advertisementProcess: '',
+      advertisementProcess: [],
       instructorsAndGuests: '',
       maleAttendees: 0,
       femaleAttendees: 0,
@@ -259,9 +269,22 @@ export default function RegisterEventForm() {
             render={({ field }) => (
               <FormItem className='grid grid-cols-2 items-center'>
                 <FormLabel>الجهة المنفذة</FormLabel>
-                <FormControl>
-                  <Input placeholder='جامعة الطائف' {...field} />
-                </FormControl>
+                <Select
+                  dir='rtl'
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='إختر الجهة المنفذة' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='TAIF_UNIVERSITY'>
+                      جامعة الطائف
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -272,7 +295,7 @@ export default function RegisterEventForm() {
             render={() => (
               <FormItem className='grid grid-cols-2 items-center py-2'>
                 <FormLabel>اسم القسم الأكاديمي بالكلية</FormLabel>
-                <div className='flex items-center gap-4'>
+                <div className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'>
                   {departments.map((item) => (
                     <FormField
                       key={item.id}
@@ -394,9 +417,22 @@ export default function RegisterEventForm() {
             render={({ field }) => (
               <FormItem className='grid grid-cols-2 items-center'>
                 <FormLabel>الفئة المستهدفة</FormLabel>
-                <FormControl>
-                  <Input placeholder='الفئة المستهدفة' {...field} />
-                </FormControl>
+                <Select
+                  dir='rtl'
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='إختر الفئة المستهدفة' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='TAIF_UNIVERSITY_EMPLOYEES'>
+                      جميع منسوبي جامعة الطائف{' '}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -405,10 +441,28 @@ export default function RegisterEventForm() {
             control={form.control}
             name='registrationProcess'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-2 items-center py-2'>
                 <FormLabel>آلية التسجيل</FormLabel>
                 <FormControl>
-                  <Input placeholder='اونلاين - حضوري' {...field} />
+                  <RadioGroup
+                    dir='rtl'
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='grid grid-cols-3 space-x-3.5 rtl:space-x-reverse'
+                  >
+                    <FormItem className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='ON-CAMPUS' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>حضوري</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='ONLINE' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>أونلاين</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -418,14 +472,43 @@ export default function RegisterEventForm() {
             control={form.control}
             name='advertisementProcess'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-2 items-center py-2'>
                 <FormLabel>آلية الإعلان</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='الإيميل الجامعي - منصات التواصل الإجتماعي'
-                    {...field}
-                  />
-                </FormControl>
+                <div className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'>
+                  {advertisementProcess.map((item) => (
+                    <FormField
+                      key={item.id}
+                      control={form.control}
+                      name='advertisementProcess'
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={item.id}
+                            className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(item.id)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, item.id])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== item.id
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className='font-normal'>
+                              {item.label}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -444,7 +527,7 @@ export default function RegisterEventForm() {
             )}
           />
 
-          <div className='grid grid-cols-2 items-start'>
+          <div className='grid grid-cols-2 items-start py-2'>
             <Label>عدد الحضور / المستفيدين</Label>
             <div className='flex flex-col gap-2'>
               <FormField
@@ -500,7 +583,7 @@ export default function RegisterEventForm() {
                     dir='rtl'
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className='flex justify-center space-x-4 rtl:space-x-reverse'
+                    className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'
                   >
                     <FormItem className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'>
                       <FormControl>
@@ -516,7 +599,7 @@ export default function RegisterEventForm() {
                     </FormItem>
                     <FormItem className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'>
                       <FormControl>
-                        <RadioGroupItem value='ورشة عمل' />
+                        <RadioGroupItem value='WORKSHOP' />
                       </FormControl>
                       <FormLabel className='font-normal'>ورشة عمل</FormLabel>
                     </FormItem>
@@ -537,7 +620,7 @@ export default function RegisterEventForm() {
                     dir='rtl'
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className='flex justify-center space-x-4 rtl:space-x-reverse'
+                    className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'
                   >
                     <FormItem className='flex items-center space-x-3 rtl:space-x-reverse space-y-0'>
                       <FormControl>
@@ -557,7 +640,6 @@ export default function RegisterEventForm() {
               </FormItem>
             )}
           />
-
           <Separator />
           <div className='space-y-4 pb-4'>
             <h3 className='font-medium tracking-tight text-2xl leading-none text-tu-primary'>
