@@ -2,11 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import Link from 'next/link';
+import GenerateDoc from './GenerateDoc';
 
 export default function Home() {
   return (
-    <main className='w-full md:grid md:grid-cols-2 min-h-screen'>
-      <div className='flex items-center justify-center py-12 border-l-4 border-tu-primary'>
+    <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
+      <div className='flex grow items-center justify-center py-12 lg:border-l-4 border-tu-primary'>
         <div className='mx-auto grid w-[350px] gap-8 z-20'>
           <div className='grid gap-2 text-center'>
             <h1 className='text-3xl flex items-center gap-2 tracking-tight justify-center'>
@@ -33,6 +34,7 @@ export default function Home() {
                 إصدار التقارير
               </Link>
             </Button>
+            <GenerateDoc />
           </div>
         </div>
       </div>

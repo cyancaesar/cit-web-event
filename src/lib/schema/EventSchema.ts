@@ -53,7 +53,7 @@ const EventSchema = z.object({
   workTeam: z.enum(
     ['CLUB-GOOGLE', 'CLUB-AI-PROGRAMMING', 'CLUB-IEEE', 'CLUB-CYBERSECURITY'],
     {
-      required_error: 'يجب إختيار نوع الفعالية',
+      required_error: 'يجب إختيار فريق العمل',
     }
   ),
 });

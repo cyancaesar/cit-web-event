@@ -48,6 +48,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
+import { generateDocument } from '@/utils/generateDocument';
 
 const items_1 = [
   {
@@ -197,8 +198,8 @@ export default function RegisterEventForm() {
       organizer: '',
       departments: [],
       date: {
-        from: new Date(),
-        to: new Date(),
+        // from: new Date(),
+        // to: new Date(),
       },
       place: '',
       time: '',
@@ -223,6 +224,7 @@ export default function RegisterEventForm() {
     console.log(values);
     const result = await registerEvent(values);
     if (result.sucess) setOpen(true);
+    await generateDocument(values);
   }
 
   const renderFileList = () => (
@@ -355,14 +357,14 @@ export default function RegisterEventForm() {
                       {field.value.from ? (
                         field.value.to ? (
                           <>
-                            {format(field.value.from, 'yyyy/MM/dd')} -{' '}
-                            {format(field.value.to, 'yyyy/MM/dd')}
+                            {format(field.value.to, 'yyyy/MM/dd')} -{' '}
+                            {format(field.value.from, 'yyyy/MM/dd')}
                           </>
                         ) : (
                           format(field.value.from, 'yyyy/MM/dd')
                         )
                       ) : (
-                        <span>Pick a date</span>
+                        <span>إختر تاريخ الفعالية</span>
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -381,7 +383,6 @@ export default function RegisterEventForm() {
                     />
                   </PopoverContent>
                 </Popover>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -951,6 +952,9 @@ export default function RegisterEventForm() {
           </div>
 
           <Button type='submit'>تسجيل الفعالية</Button>
+          {/* <Button onClick={() => generateDocument()} type='button'>
+            توليد ملف
+          </Button> */}
           <Button variant='secondary' type='button' asChild>
             <Link href='/'>خروج</Link>
           </Button>
