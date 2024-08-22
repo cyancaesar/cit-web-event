@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import Link from 'next/link';
-import GenerateDoc from './GenerateDoc';
 
 export default function Home() {
   return (
@@ -30,11 +29,10 @@ export default function Home() {
               </Link>
             </Button>
             <Button asChild>
-              <Link className='font-bold' href='#'>
+              <Link className='font-bold' href='/report'>
                 إصدار التقارير
               </Link>
             </Button>
-            <GenerateDoc />
           </div>
         </div>
       </div>

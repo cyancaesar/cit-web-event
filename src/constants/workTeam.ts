@@ -4,3 +4,6 @@ export const WORKTEAM = {
   'CLUB-IEEE': 'نادي IEEE',
   'CLUB-CYBERSECURITY': 'نادي الأمن السيبراني',
 };
+
+export type TWORKTEAM = typeof WORKTEAM;
+export type KWORKTEAM = keyof TWORKTEAM;
