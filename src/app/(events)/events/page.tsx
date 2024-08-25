@@ -2,11 +2,10 @@ import Image from 'next/image';
 import EventTable from './EventTable';
 import { columns } from './event-columns';
 import prisma from '@/lib/db';
+export const dynamic = 'force-dynamic';
 
 export default async function Events() {
   const events = await prisma.event.findMany();
-
-  console.log(events);
 
   return (
     <main className='min-h-screen flex relative flex-col gap-4'>
@@ -39,11 +38,7 @@ export default async function Events() {
         {/* </Card> */}
       </div>
       <div className='flex grow flex-col relative'>
-        {/* <div className='px-4 absolute top-0 left-0 w-full h-full'> */}
-        {/* <ScrollArea dir='rtl' className='w-full h-full'> */}
         <EventTable columns={columns} data={events} />
-        {/* </ScrollArea> */}
-        {/* </div> */}
       </div>
     </main>
   );

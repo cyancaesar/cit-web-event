@@ -212,6 +212,7 @@ async function generateAllReport() {
   return doc;
 }
 
+export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   const document = await generateAllReport();
   const buffer = await Packer.toBuffer(document);

@@ -49,9 +49,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
 import { generateDocument } from '@/utils/generateDocument';
-// import dynamic from 'next/dynamic'
-
-// const generateDocument = dynamic(() => import("@/utils/generateDocument"), {ssr: false});
 
 const items_1 = [
   {

@@ -15,8 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Ellipsis } from 'lucide-react';
-import { generateDocument } from '@/utils/generateDocument';
-import { exportDocument } from '@/utils/exportDocument';
+// import { generateDocument } from '@/utils/generateDocument';
+// import { exportDocument } from '@/utils/exportDocument';
 
 export type Event = EventPrisma;
 
@@ -160,7 +160,7 @@ export const columns: ColumnDef<Event>[] = [
           <DropdownMenuItem
             onClick={async () => {
               const event = cell.row.original;
-              exportDocument(event);
+              // exportDocument(event);
             }}
           >
             إصدار نموذج
