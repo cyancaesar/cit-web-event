@@ -1,11 +1,11 @@
+'use client';
+
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
-import PizZipUtils from 'pizzip/utils';
+// import PizZipUtils from 'pizzip/utils';
 import expressionParser from 'docxtemplater/expressions';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
-import EventSchema from '@/lib/schema/EventSchema';
-import { z } from 'zod';
 import {
   ADVERTISEMENT_PROCESS,
   TADVERTISEMENT_PROCESS,
@@ -14,6 +14,13 @@ import { EVENT_TYPE, KEVENT_TYPE } from '@/constants/eventType';
 import { KWORKTEAM, WORKTEAM } from '@/constants/workTeam';
 import { DEPARTMENT, DEPARTMENT_KEY } from '@/constants/department';
 import { Event } from '@prisma/client';
+
+let PizZipUtils: any = null;
+if (typeof window !== 'undefined') {
+  import('pizzip/utils').then(function (r) {
+    PizZipUtils = r;
+  });
+}
 
 function loadFile(url: string, callback: (err: Error, data: string) => void) {
   PizZipUtils.getBinaryContent(url, callback);

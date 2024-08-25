@@ -2,12 +2,11 @@ import Image from 'next/image';
 import EventTable from './EventTable';
 import { columns } from './event-columns';
 import prisma from '@/lib/db';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 export default async function Events() {
   const events = await prisma.event.findMany();
+
+  console.log(events);
 
   return (
     <main className='min-h-screen flex relative flex-col gap-4'>

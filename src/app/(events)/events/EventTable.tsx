@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getGroupedRowModel,
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';

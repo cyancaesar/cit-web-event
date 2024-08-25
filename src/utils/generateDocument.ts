@@ -1,6 +1,8 @@
+'use client';
+
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
-import PizZipUtils from 'pizzip/utils';
+// import PizZipUtils from 'pizzip/utils';
 import expressionParser from 'docxtemplater/expressions';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
@@ -13,6 +15,13 @@ import {
 import { EVENT_TYPE } from '@/constants/eventType';
 import { WORKTEAM } from '@/constants/workTeam';
 import { DEPARTMENT, DEPARTMENT_KEY } from '@/constants/department';
+
+let PizZipUtils: any = null;
+if (typeof window !== 'undefined') {
+  import('pizzip/utils').then(function (r) {
+    PizZipUtils = r;
+  });
+}
 
 function loadFile(url: string, callback: (err: Error, data: string) => void) {
   PizZipUtils.getBinaryContent(url, callback);
