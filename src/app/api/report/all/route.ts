@@ -17,6 +17,7 @@ import {
 } from 'docx';
 import { format } from 'date-fns';
 import { createActivitiesTable } from '@/utils/ActivityTable';
+import { unstable_noStore as noStore } from 'next/cache';
 
 async function generateAllReport() {
   const workteam_1 = await prisma.event.findMany({
@@ -185,23 +186,6 @@ async function generateAllReport() {
                   }),
                 ],
               }),
-              // new Paragraph({
-              //   alignment: 'right',
-              //   children: [
-              //     new TextRun({
-              //       text: `تم إنشاء التقرير من dev.noor.cx`,
-              //       rightToLeft: true,
-              //     }),
-              //   ],
-              // }),
-              // new Paragraph({
-              //   alignment: 'left',
-              //   children: [
-              //     new TextRun({
-              //       text: `${format(new Date(), 'yyyy/MM/dd HH:mm')}`,
-              //     }),
-              //   ],
-              // }),
             ],
           }),
         },
@@ -212,8 +196,8 @@ async function generateAllReport() {
   return doc;
 }
 
-export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
+  noStore();
   const document = await generateAllReport();
   const buffer = await Packer.toBuffer(document);
 

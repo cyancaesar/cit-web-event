@@ -1,10 +1,12 @@
+import { unstable_noStore as noStore } from 'next/cache';
+
 import Image from 'next/image';
 import EventTable from './EventTable';
 import { columns } from './event-columns';
 import prisma from '@/lib/db';
-export const dynamic = 'force-dynamic';
 
 export default async function Events() {
+  noStore();
   const events = await prisma.event.findMany();
 
   return (
