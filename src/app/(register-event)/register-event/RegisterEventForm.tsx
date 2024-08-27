@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,7 +23,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CalendarIcon, CircleCheckBig, Trash, UploadIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  CircleCheckBig,
+  LoaderCircle,
+  Trash,
+  UploadIcon,
+  XCircle,
+} from 'lucide-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -43,12 +50,16 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
 import { generateDocument } from '@/utils/generateDocument';
+import { uploadToS3 } from '@/lib/s3';
+import { Progress } from '@/components/ui/progress';
+import mime from 'mime';
 
 const items_1 = [
   {
@@ -186,10 +197,30 @@ const advertisementProcess = [
   },
 ];
 
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+const fileSchema = z
+  .instanceof(File)
+  .refine((f) => f.size < MAX_FILE_SIZE, {
+    message: 'الحد الأعلى لحجم الملف: 50MB',
+  })
+  .refine(
+    (f) => ACCEPTED_IMAGE_TYPES.includes(f.type),
+    `نوع الملفات المسموحة: ${ACCEPTED_IMAGE_TYPES.join(', ')}`
+  );
+
 export default function RegisterEventForm() {
   const [open, setOpen] = useState(false);
-  const [files, setFiles] = useState<FileList | null>(null);
+  const [fileError, setFileError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadCount, setUploadCount] = useState({ total: 0, uploaded: 0 });
+  const [files, setFiles] = useState<File[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    console.log(files);
+  }, [files]);
 
   const form = useForm<z.infer<typeof EventSchema>>({
     resolver: zodResolver(EventSchema),
@@ -197,10 +228,7 @@ export default function RegisterEventForm() {
       title: '',
       organizer: '',
       departments: [],
-      date: {
-        // from: new Date(),
-        // to: new Date(),
-      },
+      date: {},
       place: '',
       time: '',
       targetAudience: '',
@@ -221,22 +249,74 @@ export default function RegisterEventForm() {
   });
 
   async function onSubmit(values: z.infer<typeof EventSchema>) {
-    console.log(values);
-    const result = await registerEvent(values);
+    // objects name array that hold reference to s3 file name
+    const objects: string[] = [];
+
+    if (files) {
+      for (let file of files) {
+        const parsed = fileSchema.safeParse(file);
+        if (parsed.error) {
+          setFileError(true);
+          return;
+        }
+      }
+
+      setUploadCount((prev) => {
+        return {
+          total: files.length,
+          uploaded: 0,
+        };
+      });
+      setUploading(true);
+      for await (let file of files) {
+        const object = await uploadToS3(file);
+        if (!object.success) {
+          setUploading(false);
+          setUploadError(true);
+          return;
+        }
+        setUploadCount((prev) => {
+          return {
+            total: prev.total,
+            uploaded: Math.min(prev.uploaded + 1, prev.total),
+          };
+        });
+        objects.push(object.filename!);
+      }
+      setUploadCount((prev) => {
+        return { total: 0, uploaded: 0 };
+      });
+      setUploading(false);
+    }
+
+    const result = await registerEvent(values, objects);
     if (result.sucess) setOpen(true);
     await generateDocument(values);
   }
 
   const renderFileList = () => (
     <>
-      {Array.from(files ?? []).map((f, i) => (
+      {files.map((f, i) => (
         <div key={i} className='relative'>
-          <Input disabled value={`${f.name} : ${f.type}`} />
+          <Input
+            dir='ltr'
+            className='text-center'
+            disabled
+            value={`${f.name} : ${f.type}`}
+          />
           <Button
             className='absolute top-0 left-0'
             variant='outline'
             size='icon'
             type='button'
+            onClick={() =>
+              setFiles((prev) => {
+                const idx = prev.findIndex((v) => v == f);
+                if (idx == -1) return [...prev];
+                prev.splice(idx, 1);
+                return [...prev];
+              })
+            }
           >
             <Trash className='h-4 w-4 text-muted-foreground' />
           </Button>
@@ -332,7 +412,6 @@ export default function RegisterEventForm() {
                     />
                   ))}
                 </div>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -340,7 +419,7 @@ export default function RegisterEventForm() {
           <FormField
             control={form.control}
             name='date'
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className='grid grid-cols-2 items-center'>
                 <FormLabel>اليوم / التاريخ</FormLabel>
                 <Popover modal={true}>
@@ -383,6 +462,11 @@ export default function RegisterEventForm() {
                     />
                   </PopoverContent>
                 </Popover>
+                {fieldState.error && (
+                  <span className='text-destructive text-sm font-medium'>
+                    يجب تحديد تاريخ الفعالية
+                  </span>
+                )}
               </FormItem>
             )}
           />
@@ -936,7 +1020,9 @@ export default function RegisterEventForm() {
                   <UploadIcon className='h-4 w-4' />
                 </Button>
                 <input
-                  onChange={(e) => setFiles(e.currentTarget.files)}
+                  onChange={(e) =>
+                    setFiles([...Array.from(e.target.files ?? [])])
+                  }
                   ref={fileRef}
                   id='files'
                   type='file'
@@ -967,6 +1053,73 @@ export default function RegisterEventForm() {
               <div className='flex items-end gap-2 justify-center'>
                 <CircleCheckBig className='text-tu-primary' />
                 تم تسجيل الفعالية
+              </div>
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className='mx-auto'>إغلاق</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={uploading} onOpenChange={setUploading}>
+        <AlertDialogContent dir='rtl'>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='text-center'>
+              <div className='flex flex-col items-center gap-2 justify-center'>
+                <LoaderCircle className='text-tu-primary animate-spin h-12 w-12' />
+                رفع الملفات الى سحابة نور
+                <Progress
+                  value={(uploadCount.uploaded / uploadCount.total) * 100}
+                />
+              </div>
+            </AlertDialogTitle>
+            <AlertDialogDescription className='text-center'>
+              تم رفع {uploadCount.uploaded} من {uploadCount.total}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={fileError} onOpenChange={setFileError}>
+        <AlertDialogContent dir='rtl'>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='text-center'>
+              <div className='flex items-end gap-2 justify-center'>
+                <XCircle className='text-destructive' />
+                خطأ عند رفع الملفات
+              </div>
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <div className='flex flex-col px-2'>
+            <ul className='list-disc'>
+              <li>
+                <div>
+                  نوع الملفات المقبولة:{' '}
+                  <span dir='rtl'>
+                    {ACCEPTED_IMAGE_TYPES.map((type) => mime.getExtension(type))
+                      .filter((m) => m && m.length > 0)
+                      .join(', ')}
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  الحد الأقصى لحجم الملف: {MAX_FILE_SIZE / 100000} ميجابايت
+                </div>
+              </li>
+            </ul>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel className='mx-auto'>إغلاق</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={uploadError} onOpenChange={setUploadError}>
+        <AlertDialogContent dir='rtl'>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='text-center'>
+              <div className='flex items-end gap-2 justify-center'>
+                <XCircle className='text-destructive' />
+                حدث خطأ عند محاولة رفع الملفات الى سحابة نور
               </div>
             </AlertDialogTitle>
           </AlertDialogHeader>

@@ -8,13 +8,10 @@ const EventSchema = z.object({
     .refine((value) => value.some((item) => item), {
       message: 'يجب أن تختار على الأقل خانة واحدة.',
     }),
-  date: z.object(
-    {
-      from: z.date(),
-      to: z.date(),
-    },
-    { required_error: 'يجب تحديد التاريخ' }
-  ),
+  date: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
   place: z.string(),
   time: z.string(),
   targetAudience: z.string(),
