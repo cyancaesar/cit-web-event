@@ -9,7 +9,7 @@ export default function Home() {
       <div className='flex grow items-center justify-center py-12 lg:border-l-4 border-tu-primary'>
         <div className='mx-auto grid w-[350px] gap-8 z-20'>
           <div className='grid gap-2 text-center'>
-            <h1 className='text-3xl flex items-center gap-2 tracking-tight justify-center'>
+            <h1 className='text-3xl font-medium flex items-center gap-2 tracking-tight justify-center'>
               أنشطة الأندية الطلابية
             </h1>
             <p className='text-balance text-muted-foreground'>
