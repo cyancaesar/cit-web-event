@@ -9,8 +9,8 @@ generator client {
 
 model User {
   id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
+  username     String  @unique
+  password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -46,6 +46,8 @@ model Event {
   univStratPlan        String
   tuga                 String
   objects              File[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map(name: "events")
 }
@@ -55,6 +57,8 @@ model File {
   objectKey              String
   Event            Event?  @relation(fields: [eventId], references: [id])
   eventId          String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map(name: "objects")
 }

@@ -283,15 +283,14 @@ export default function RegisterEventForm() {
         });
         objects.push(object.filename!);
       }
-      setUploadCount((prev) => {
-        return { total: 0, uploaded: 0 };
-      });
+
       setUploading(false);
     }
 
     const result = await registerEvent(values, objects);
     if (result.sucess) setOpen(true);
     await generateDocument(values);
+    form.reset();
   }
 
   const renderFileList = () => (
@@ -1037,7 +1036,12 @@ export default function RegisterEventForm() {
             <div className='space-y-2'>{files && renderFileList()}</div>
           </div>
 
-          <Button type='submit'>تسجيل الفعالية</Button>
+          <Button disabled={form.formState.isSubmitting} type='submit'>
+            {form.formState.isSubmitting && (
+              <LoaderCircle className='ml-2 h-4 w-4 animate-spin' />
+            )}
+            تسجيل الفعالية
+          </Button>
           {/* <Button onClick={() => generateDocument()} type='button'>
             توليد ملف
           </Button> */}

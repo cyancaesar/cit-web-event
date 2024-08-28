@@ -18,6 +18,7 @@ import {
 import { format } from 'date-fns';
 import { createActivitiesTable } from '@/utils/ActivityTable';
 import { unstable_noStore as noStore } from 'next/cache';
+import { auth } from '@/auth';
 
 async function generateAllReport() {
   const workteam_1 = await prisma.event.findMany({
@@ -198,6 +199,12 @@ async function generateAllReport() {
 
 export async function GET(req: NextRequest) {
   noStore();
+
+  const session = await auth();
+  if (!session?.user) return new NextResponse(null, { status: 500 });
+  if (session?.user.name != 'admin')
+    return new NextResponse(null, { status: 500 });
+
   const document = await generateAllReport();
   const buffer = await Packer.toBuffer(document);
 
