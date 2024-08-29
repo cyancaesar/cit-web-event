@@ -34,7 +34,7 @@ export default function CreateUserForm() {
         />
       </div>
       <div className='flex flex-col gap-4'>
-        <Label>كلمة المرور</Label>
+        <Label htmlFor='password'>كلمة المرور</Label>
         <div className='relative'>
           <Input
             dir='ltr'
@@ -58,7 +58,7 @@ export default function CreateUserForm() {
         </div>
       </div>
       <div className='flex flex-col gap-4'>
-        <Label>تأكيد كلمة المرور</Label>
+        <Label htmlFor='confirmPassword'>تأكيد كلمة المرور</Label>
         <Input
           dir='ltr'
           className='text-end'

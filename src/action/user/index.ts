@@ -85,7 +85,6 @@ export async function createUser(
   });
 
   if (data.error) {
-    console.log(data.error);
     if (data.error.issues.length > 0) {
       return { error: data.error.issues.at(0)?.message };
     }

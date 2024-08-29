@@ -29,22 +29,25 @@ export default async function Home() {
                   تسجيل الفعاليات
                 </Link>
               </Button>
-              <Button asChild>
-                <Link className='font-bold' href='/events'>
-                  الفعاليات المسجلة
-                </Link>
-              </Button>
-              <Button asChild>
-                <Link className='font-bold' href='/report'>
-                  إصدار التقارير
-                </Link>
-              </Button>
+
               {user.role === 'admin' && (
-                <Button asChild>
-                  <Link className='font-bold' href='/user/create'>
-                    إنشاء مستخدم
-                  </Link>
-                </Button>
+                <>
+                  <Button asChild>
+                    <Link className='font-bold' href='/events'>
+                      الفعاليات المسجلة
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link className='font-bold' href='/report'>
+                      إصدار التقارير
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link className='font-bold' href='/user/create'>
+                      إنشاء مستخدم
+                    </Link>
+                  </Button>
+                </>
               )}
               <form action={signOut}>
                 <Button className='w-full' variant='secondary'>
