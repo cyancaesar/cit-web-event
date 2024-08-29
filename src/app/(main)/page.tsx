@@ -11,7 +11,8 @@ export default async function Home() {
 
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
-      <div className='flex grow items-center justify-center py-12 lg:border-l-4 border-tu-primary'>
+      <div className='flex flex-col grow items-center justify-between py-4 lg:border-l-4 border-tu-primary'>
+        <div></div>
         {user ? (
           <div className='mx-auto grid w-[350px] gap-8 z-20'>
             <div className='grid gap-2 text-center'>
@@ -29,7 +30,6 @@ export default async function Home() {
                   تسجيل الفعاليات
                 </Link>
               </Button>
-
               {user.role === 'admin' && (
                 <>
                   <Button asChild>
@@ -43,12 +43,18 @@ export default async function Home() {
                     </Link>
                   </Button>
                   <Button asChild>
+                    <Link className='font-bold' href='/user/manage'>
+                      إدارة المستخدمين
+                    </Link>
+                  </Button>
+                  <Button asChild>
                     <Link className='font-bold' href='/user/create'>
                       إنشاء مستخدم
                     </Link>
                   </Button>
                 </>
               )}
+              <Separator />
               <form action={signOut}>
                 <Button className='w-full' variant='secondary'>
                   تسجيل خروج
@@ -59,6 +65,7 @@ export default async function Home() {
         ) : (
           <LoginForm />
         )}
+        <div></div>
       </div>
       <div className='hidden lg:flex relative flex-col justify-center items-center'>
         <div className='z-20 flex flex-col text-3xl items-center text-tu-primary'>

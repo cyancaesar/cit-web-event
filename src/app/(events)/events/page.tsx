@@ -4,6 +4,15 @@ import { columns } from './event-columns';
 import prisma from '@/lib/db';
 import Unauthorized from '@/components/Unauthorized';
 import { validateRequest } from '@/auth';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
 
 export default async function Events() {
   const { user } = await validateRequest();
@@ -13,14 +22,24 @@ export default async function Events() {
   return (
     <main className='min-h-screen flex relative flex-col gap-4'>
       <div
-        className='h-40 relative border-b-4 border-b-tu-primary flex items-center justify-between px-12'
+        className='h-40 relative border-b-4 border-b-tu-primary flex items-center justify-between px-8'
         style={{
           backgroundImage: "url('/assets/pattern.png')",
         }}
       >
-        <h1 className='text-4xl font-medium text-tu-primary'>
-          الفعاليات المسجلة
-        </h1>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href='/'>الرئيسية</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className='rtl:rotate-180' />
+            <BreadcrumbItem>
+              <BreadcrumbPage>الفعاليات المسجلة</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className='relative w-40 p-4 flex justify-center items-center'>
           <Image
             src='/assets/logo.png'

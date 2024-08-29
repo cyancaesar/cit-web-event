@@ -40,7 +40,7 @@ export default function ExportReport() {
     <Card className='w-[450px] border-t-4 border-t-tu-primary'>
       <CardHeader className='py-8 pb-4'>
         <CardTitle className='font-medium'>
-          إصدار تقارير الفعاليات السنوية
+          إصدار تقرير الفعاليات السنوية
         </CardTitle>
       </CardHeader>
       <CardContent className='flex flex-col gap-6 py-6'>

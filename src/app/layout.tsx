@@ -45,7 +45,7 @@ const dinPro = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات',
+  title: 'الأنشطة الطلابية | جامعة الطائف',
   description: 'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات',
 };
 
