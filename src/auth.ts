@@ -1,35 +1,71 @@
-import NextAuth, { User } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
+import { Lucia, TimeSpan, type User, type Session } from 'lucia';
+import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
 import prisma from './lib/db';
-import bcrypt from 'bcrypt';
+import { cache } from 'react';
+import { cookies } from 'next/headers';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,
-  jwt: { maxAge: 7 * 24 * 60 * 60 /* 7 days */ },
-  providers: [
-    Credentials({
-      credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials): Promise<User | null> {
-        const username = credentials!.username! as string;
-        const password = credentials!.password! as string;
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
-        const user = await prisma.user.findUnique({
-          where: {
-            username,
-          },
-        });
-
-        if (!user) return null;
-
-        const isValid = await bcrypt.compare(password, user?.password!);
-        if (isValid) {
-          return { id: user.id, name: user.username, email: 'non@non.non' };
-        } else return null;
-      },
-    }),
-  ],
+export const lucia = new Lucia(adapter, {
+  // Session Expires in 1 week.
+  sessionExpiresIn: new TimeSpan(1, 'w'),
+  sessionCookie: {
+    name: 'NOOR_SESSION',
+    expires: false,
+    attributes: {
+      secure: process.env.NODE_ENV === 'production',
+    },
+  },
+  getUserAttributes: (attributes) => {
+    return {
+      username: attributes.username,
+      role: attributes.role,
+    };
+  },
 });
+
+export const validateRequest = cache(
+  async (): Promise<
+    { user: User; session: Session } | { user: null; session: null }
+  > => {
+    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    if (!sessionId)
+      return {
+        user: null,
+        session: null,
+      };
+
+    const result = await lucia.validateSession(sessionId);
+    try {
+      if (result.session && result.session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(result.session.id);
+        cookies().set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes
+        );
+      }
+      if (!result.session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        cookies().set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes
+        );
+      }
+    } catch {}
+    return result;
+  }
+);
+
+declare module 'lucia' {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
+  }
+}
+
+interface DatabaseUserAttributes {
+  username: string;
+  role: string;
+}

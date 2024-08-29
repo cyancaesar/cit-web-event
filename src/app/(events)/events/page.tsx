@@ -1,19 +1,13 @@
-import { unstable_noStore as noStore } from 'next/cache';
-
 import Image from 'next/image';
 import EventTable from './EventTable';
 import { columns } from './event-columns';
 import prisma from '@/lib/db';
 import Unauthorized from '@/components/Unauthorized';
-import { auth } from '@/auth';
+import { validateRequest } from '@/auth';
 
 export default async function Events() {
-  noStore();
-
-  const session = await auth();
-  if (!session?.user) return <Unauthorized />;
-  if (session.user.name != 'admin') return <Unauthorized />;
-
+  const { user } = await validateRequest();
+  if (!user || user.role !== 'admin') return <Unauthorized />;
   const events = await prisma.event.findMany();
 
   return (

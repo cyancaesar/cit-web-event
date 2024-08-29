@@ -9,12 +9,12 @@ import { Separator } from '@/components/ui/separator';
 import React from 'react';
 import RegisterEventForm from './RegisterEventForm';
 import Image from 'next/image';
-import { auth } from '@/auth';
 import Unauthorized from '@/components/Unauthorized';
+import { validateRequest } from '@/auth';
 
 export default async function RegisterEvent() {
-  const session = await auth();
-  if (!session?.user) return <Unauthorized />;
+  const { user } = await validateRequest();
+  if (!user) return <Unauthorized />;
 
   return (
     <main className='min-h-screen flex relative'>

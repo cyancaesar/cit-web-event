@@ -41,7 +41,7 @@ export async function registerEvent(data: unknown, s3Objects: string[]) {
       workTeam: event.workTeam,
       date_from: event.date.from,
       date_to: event.date.to,
-      objects: {
+      files: {
         createMany: {
           data: s3Objects.map((obj) => {
             return { objectKey: obj };

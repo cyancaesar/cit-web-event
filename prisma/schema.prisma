@@ -8,13 +8,21 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username     String  @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(cuid())
+  username  String    @unique
+  password  String
+  role      String
+  createdAt DateTime  @default(now())
+  sessions  Session[]
+}
 
-  @@map(name: "users")
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Event {
@@ -45,20 +53,16 @@ model Event {
   acadAffairsPlan      String
   univStratPlan        String
   tuga                 String
-  objects              File[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map(name: "events")
+  files                File[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model File {
-  id               String  @id @default(cuid())
-  objectKey              String
-  Event            Event?  @relation(fields: [eventId], references: [id])
-  eventId          String?
+  id        String   @id @default(cuid())
+  objectKey String
+  Event     Event?   @relation(fields: [eventId], references: [id])
+  eventId   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@map(name: "objects")
 }

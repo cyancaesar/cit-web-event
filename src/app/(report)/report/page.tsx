@@ -1,11 +1,10 @@
-import { auth } from '@/auth';
+import { validateRequest } from '@/auth';
 import ExportReport from './ExportReport';
 import Unauthorized from '@/components/Unauthorized';
 
 export default async function Report() {
-  const session = await auth();
-  if (!session?.user) return <Unauthorized />;
-  if (session.user.name != 'admin') return <Unauthorized />;
+  const { user } = await validateRequest();
+  if (!user || user.role !== 'admin') return <Unauthorized />;
 
   return (
     <main className='min-h-screen relative flex flex-col justify-center'>

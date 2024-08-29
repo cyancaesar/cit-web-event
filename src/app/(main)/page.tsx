@@ -3,15 +3,16 @@ import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import Link from 'next/link';
 import LoginForm from './LoginForm';
-import { auth } from '@/auth';
+import { validateRequest } from '@/auth';
+import { signOut } from '@/action/user';
 
 export default async function Home() {
-  const session = await auth();
+  const { user } = await validateRequest();
 
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
       <div className='flex grow items-center justify-center py-12 lg:border-l-4 border-tu-primary'>
-        {session?.user && (
+        {user ? (
           <div className='mx-auto grid w-[350px] gap-8 z-20'>
             <div className='grid gap-2 text-center'>
               <h1 className='text-3xl font-medium flex items-center gap-2 tracking-tight justify-center'>
@@ -38,10 +39,23 @@ export default async function Home() {
                   إصدار التقارير
                 </Link>
               </Button>
+              {user.role === 'admin' && (
+                <Button asChild>
+                  <Link className='font-bold' href='/user/create'>
+                    إنشاء مستخدم
+                  </Link>
+                </Button>
+              )}
+              <form action={signOut}>
+                <Button className='w-full' variant='secondary'>
+                  تسجيل خروج
+                </Button>
+              </form>
             </div>
           </div>
+        ) : (
+          <LoginForm />
         )}
-        {!session?.user && <LoginForm />}
       </div>
       <div className='hidden lg:flex relative flex-col justify-center items-center'>
         <div className='z-20 flex flex-col text-3xl items-center text-tu-primary'>

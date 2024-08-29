@@ -26,6 +26,7 @@ import {
 import {
   CalendarIcon,
   CircleCheckBig,
+  Eye,
   LoaderCircle,
   Trash,
   UploadIcon,
@@ -60,6 +61,7 @@ import { generateDocument } from '@/utils/generateDocument';
 import { uploadToS3 } from '@/lib/s3';
 import { Progress } from '@/components/ui/progress';
 import mime from 'mime';
+import { filesize } from 'filesize';
 
 const items_1 = [
   {
@@ -293,34 +295,69 @@ export default function RegisterEventForm() {
     form.reset();
   }
 
+  const viewFile = async (file: File) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const blob = new Blob([arrayBuffer]);
+    const url = URL.createObjectURL(blob);
+    // a.href = url;
+    window.open(url);
+    // a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const renderFileList = () => (
     <>
-      {files.map((f, i) => (
-        <div key={i} className='relative'>
-          <Input
-            dir='ltr'
-            className='text-center'
-            disabled
-            value={`${f.name} : ${f.type}`}
-          />
-          <Button
-            className='absolute top-0 left-0'
-            variant='outline'
-            size='icon'
-            type='button'
-            onClick={() =>
-              setFiles((prev) => {
-                const idx = prev.findIndex((v) => v == f);
-                if (idx == -1) return [...prev];
-                prev.splice(idx, 1);
-                return [...prev];
-              })
-            }
-          >
-            <Trash className='h-4 w-4 text-muted-foreground' />
-          </Button>
-        </div>
-      ))}
+      {files.length > 0 && (
+        <>
+          <div className='grid grid-cols-4 text-sm items-center gap-y-2'>
+            <div>اسم الملف</div>
+            <div>نوع</div>
+            <div>حجم</div>
+            <div></div>
+
+            {files.map((f) => (
+              <>
+                <div dir='ltr' className='text-end'>
+                  {f.name.length <= 10
+                    ? f.name
+                    : f.name.substring(0, 10) + '.' + mime.getExtension(f.type)}
+                </div>
+                <div>{f.type}</div>
+                <div dir='ltr' className='text-end'>
+                  {filesize(f.size, {
+                    standard: 'jedec',
+                  })}
+                </div>
+                <div className='text-end space-x-2 rtl:space-x-reverse'>
+                  <Button
+                    onClick={() => viewFile(f)}
+                    variant='ghost'
+                    size='icon'
+                    type='button'
+                  >
+                    <Eye className='h-4 w-4 text-muted-foreground' />
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    type='button'
+                    onClick={() =>
+                      setFiles((prev) => {
+                        const idx = prev.findIndex((v) => v == f);
+                        if (idx == -1) return [...prev];
+                        prev.splice(idx, 1);
+                        return [...prev];
+                      })
+                    }
+                  >
+                    <Trash className='h-4 w-4 text-muted-foreground' />
+                  </Button>
+                </div>
+              </>
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 
@@ -1020,7 +1057,9 @@ export default function RegisterEventForm() {
                 </Button>
                 <input
                   onChange={(e) =>
-                    setFiles([...Array.from(e.target.files ?? [])])
+                    setFiles((prev) => {
+                      return [...Array.from(e.target.files ?? [])];
+                    })
                   }
                   ref={fileRef}
                   id='files'
@@ -1042,9 +1081,6 @@ export default function RegisterEventForm() {
             )}
             تسجيل الفعالية
           </Button>
-          {/* <Button onClick={() => generateDocument()} type='button'>
-            توليد ملف
-          </Button> */}
           <Button variant='secondary' type='button' asChild>
             <Link href='/'>خروج</Link>
           </Button>
