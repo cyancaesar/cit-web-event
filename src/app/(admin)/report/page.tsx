@@ -11,10 +11,17 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
+import prisma from '@/lib/db';
+import { getYear } from 'date-fns';
 
 export default async function Report() {
   const { user } = await validateRequest();
   if (!user || user.role !== 'admin') return <Unauthorized />;
+
+  const dates = await prisma.event.findMany({ select: { date_from: true } });
+  const years = dates
+    .map((date) => getYear(date.date_from))
+    .filter((year, index, years) => years.indexOf(year) === index);
 
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
@@ -32,7 +39,7 @@ export default async function Report() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <ExportReport />
+        <ExportReport years={years} />
         <div></div>
       </div>
       <div className='hidden lg:flex relative flex-col justify-center items-center'>

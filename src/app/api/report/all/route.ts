@@ -15,38 +15,73 @@ import {
   TextRun,
   WidthType,
 } from 'docx';
-import { format } from 'date-fns';
+import { endOfYear, format } from 'date-fns';
 import { createActivitiesTable } from '@/utils/ActivityTable';
 import { validateRequest } from '@/auth';
+import { z } from 'zod';
 
-async function generateAllReport() {
+async function generateAllReport(year: number) {
+  const firstDay = new Date(year, 0, 0);
+  const lastDay = endOfYear(new Date(year, 1, 0));
   const workteam_1 = await prisma.event.findMany({
-    where: { workTeam: 'CLUB-CYBERSECURITY' },
+    where: {
+      workTeam: 'CLUB-CYBERSECURITY',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const workteam_2 = await prisma.event.findMany({
-    where: { workTeam: 'CLUB-IEEE' },
+    where: {
+      workTeam: 'CLUB-IEEE',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const workteam_3 = await prisma.event.findMany({
-    where: { workTeam: 'CLUB-AI-PROGRAMMING' },
+    where: {
+      workTeam: 'CLUB-AI-PROGRAMMING',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const workteam_4 = await prisma.event.findMany({
-    where: { workTeam: 'CLUB-GOOGLE' },
+    where: {
+      workTeam: 'CLUB-GOOGLE',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const totalTeam1 = await prisma.event.aggregate({
     _sum: { totalAttendees: true },
-    where: { workTeam: 'CLUB-CYBERSECURITY' },
+    where: {
+      workTeam: 'CLUB-CYBERSECURITY',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const totalTeam2 = await prisma.event.aggregate({
     _sum: { totalAttendees: true },
-    where: { workTeam: 'CLUB-IEEE' },
+    where: {
+      workTeam: 'CLUB-IEEE',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const totalTeam3 = await prisma.event.aggregate({
     _sum: { totalAttendees: true },
-    where: { workTeam: 'CLUB-AI-PROGRAMMING' },
+    where: {
+      workTeam: 'CLUB-AI-PROGRAMMING',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
   const totalTeam4 = await prisma.event.aggregate({
     _sum: { totalAttendees: true },
-    where: { workTeam: 'CLUB-GOOGLE' },
+    where: {
+      workTeam: 'CLUB-GOOGLE',
+      date_from: { gte: firstDay },
+      date_to: { lte: lastDay },
+    },
   });
 
   const maxEvents = Math.max(
@@ -201,7 +236,13 @@ export async function GET(req: NextRequest) {
   if (!user || user.role != 'admin')
     return new NextResponse(null, { status: 500 });
 
-  const document = await generateAllReport();
+  const searchParams = req.nextUrl.searchParams;
+  const yearParam = searchParams.get('year') ?? null;
+  const parsed = z.coerce.number().min(1970).max(2030).safeParse(yearParam);
+
+  if (parsed.error) return new NextResponse(null, { status: 500 });
+
+  const document = await generateAllReport(parsed.data);
   const buffer = await Packer.toBuffer(document);
 
   const headers = new Headers();

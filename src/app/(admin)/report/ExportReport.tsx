@@ -10,10 +10,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { saveAs } from 'file-saver';
+import { useState } from 'react';
 
-export default function ExportReport() {
+type Props = {
+  years: number[];
+};
+
+export default function ExportReport({ years }: Props) {
+  const [year, setYear] = useState<string>();
+
   const handleClick = async () => {
-    const response = await fetch('/api/report/all');
+    if (year == undefined) return;
+    const response = await fetch(
+      '/api/report/all?' +
+        new URLSearchParams({
+          year: year,
+        }).toString()
+    );
     if (!response.ok) {
       alert('Error.');
       return;
@@ -46,12 +59,16 @@ export default function ExportReport() {
       <CardContent className='flex flex-col gap-6 py-6'>
         <div className='flex flex-col gap-4'>
           <Label>فعاليات السنة</Label>
-          <Select dir='rtl'>
+          <Select onValueChange={(value) => setYear(value)} dir='rtl'>
             <SelectTrigger>
               <SelectValue placeholder='السنة' />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='2024'>2024</SelectItem>
+              {years.map((year, key) => (
+                <SelectItem key={key} value={`${year}`}>
+                  {year}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
