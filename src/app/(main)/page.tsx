@@ -43,6 +43,11 @@ export default async function Home() {
                     </Link>
                   </Button>
                   <Button asChild>
+                    <Link className='font-bold' href='/gallery'>
+                      معرض الصور
+                    </Link>
+                  </Button>
+                  <Button asChild>
                     <Link className='font-bold' href='/user/manage'>
                       إدارة المستخدمين
                     </Link>
