@@ -28,7 +28,7 @@ export default async function Report() {
             </BreadcrumbItem>
             <BreadcrumbSeparator className='rtl:rotate-180' />
             <BreadcrumbItem>
-              <BreadcrumbPage>إصدار تقارير</BreadcrumbPage>
+              <BreadcrumbPage>إصدار التقارير</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

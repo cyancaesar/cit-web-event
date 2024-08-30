@@ -27,7 +27,6 @@ export default async function ManageUser() {
   if (!user || user.role !== 'admin') return <Unauthorized />;
 
   const users = await prisma.user.findMany({
-    // where: { NOT: { id: user.id } },
     include: { sessions: true },
   });
 
