@@ -16,28 +16,38 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Ellipsis } from 'lucide-react';
 import { exportDocument } from '@/utils/exportDocument';
-// import { generateDocument } from '@/utils/generateDocument';
-// import { exportDocument } from '@/utils/exportDocument';
 
 export type Event = EventPrisma;
 
-const columnHelper = createColumnHelper<Event>();
+const columnHelper = createColumnHelper<
+  Event & { user: { username: string } | null }
+>();
 
-export const columns: ColumnDef<Event>[] = [
+export const columns: ColumnDef<
+  Event & { user: { username: string } | null }
+>[] = [
   {
     id: 'select',
-    cell: ({ row }) => (
+    cell: (cell) => (
       <div className='flex items-center justify-center text-center'>
         <Checkbox
           className='mx-auto'
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          checked={cell.row.getIsSelected()}
+          onCheckedChange={(value) => cell.row.toggleSelected(!!value)}
           aria-label='Select row'
         />
       </div>
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    id: 'user',
+    accessorKey: 'user.username',
+    header: 'المستخدم',
+    cell: (cell) => (
+      <span>{cell.row.original.user?.username || 'لا يوجد'}</span>
+    ),
   },
   {
     accessorKey: 'title',

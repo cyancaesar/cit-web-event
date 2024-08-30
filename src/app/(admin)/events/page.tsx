@@ -17,7 +17,9 @@ import Link from 'next/link';
 export default async function Events() {
   const { user } = await validateRequest();
   if (!user || user.role !== 'admin') return <Unauthorized />;
-  const events = await prisma.event.findMany();
+  const events = await prisma.event.findMany({
+    include: { user: { select: { username: true } } },
+  });
 
   return (
     <main className='min-h-screen flex relative flex-col gap-4'>
