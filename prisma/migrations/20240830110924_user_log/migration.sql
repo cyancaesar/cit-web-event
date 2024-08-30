@@ -1,0 +1,6 @@
+-- CreateTable
+CREATE TABLE "UserLog" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "username" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -36,6 +36,11 @@ export async function signIn(
     };
   }
 
+  // Log user sign in
+  await prisma.log.create({
+    data: { user: { connect: { id: existingUser.id } } },
+  });
+
   const session = await lucia.createSession(existingUser.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(

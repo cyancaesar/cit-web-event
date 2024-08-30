@@ -1,9 +1,14 @@
 'use server';
 
+import { validateRequest } from '@/auth';
 import prisma from '@/lib/db';
 import EventSchema from '@/lib/schema/EventSchema';
 
 export async function registerEvent(data: unknown, s3Objects: string[]) {
+  const { user } = await validateRequest();
+
+  if (!user) return { sucess: false, error: 'غير موثق' };
+
   const result = EventSchema.safeParse(data);
 
   if (result.error) {
@@ -48,6 +53,7 @@ export async function registerEvent(data: unknown, s3Objects: string[]) {
           }),
         },
       },
+      user: { connect: { id: user.id } },
     },
   });
 

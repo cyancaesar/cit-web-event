@@ -38,7 +38,7 @@ export default function CreateUserForm() {
         <div className='relative'>
           <Input
             dir='ltr'
-            className='text-end'
+            className='text-end rtl:pl-12'
             name='password'
             type={showPassword ? 'text' : 'password'}
           />

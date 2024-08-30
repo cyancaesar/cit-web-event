@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,12 +22,17 @@ import {
 import Link from 'next/link';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+function formatDate(date: Date) {
+  if (isToday(date)) return format(date, 'hh:mm a');
+  return format(date, 'yyyy/MM/dd, hh:mm a');
+}
+
 export default async function ManageUser() {
   const { user } = await validateRequest();
   if (!user || user.role !== 'admin') return <Unauthorized />;
 
   const users = await prisma.user.findMany({
-    include: { sessions: true },
+    include: { logs: true },
   });
 
   return (
@@ -68,11 +73,8 @@ export default async function ManageUser() {
                       </TableCell>
                       <TableCell className='text-center'>0</TableCell>
                       <TableCell dir='ltr' className='text-center'>
-                        {user.sessions.length > 0
-                          ? format(
-                              user.sessions.at(-1)?.createdAt!,
-                              'yyyy/MM/dd, hh:MM:s a'
-                            )
+                        {user.logs.length > 0
+                          ? formatDate(user.logs.at(-1)?.createdAt!)
                           : 'لم يسجل دخوله'}
                       </TableCell>
                     </TableRow>
