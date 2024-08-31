@@ -21,6 +21,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { CircleCheck, CircleX } from 'lucide-react';
+
+import ManagePopover from './ManagePopover';
 
 function formatDate(date: Date) {
   if (isToday(date)) return format(date, 'hh:mm a');
@@ -60,14 +63,13 @@ export default async function ManageUser() {
                     <TableHead>المستخدم</TableHead>
                     <TableHead>عدد الفعاليات المسجلة</TableHead>
                     <TableHead>اخر تسجيل دخول</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {users.map((user, key) => (
-                    <TableRow
-                      className='even:bg-muted even:hover:bg-muted hover:bg-transparent'
-                      key={key}
-                    >
+                    <TableRow className=' hover:bg-transparent' key={key}>
                       <TableCell className='text-center'>
                         {user.username}
                       </TableCell>
@@ -76,6 +78,20 @@ export default async function ManageUser() {
                         {user.logs.length > 0
                           ? formatDate(user.logs.at(-1)?.createdAt!)
                           : 'لم يسجل دخوله'}
+                      </TableCell>
+                      <TableCell dir='ltr' className='text-center'>
+                        {!user.isDisabled ? (
+                          <CircleCheck className='h-4 w-4 text-green-600 mx-auto' />
+                        ) : (
+                          <CircleX className='h-4 w-4 text-red-700 mx-auto' />
+                        )}
+                      </TableCell>
+                      <TableCell className='w-min'>
+                        <ManagePopover
+                          id={user.id}
+                          username={user.username}
+                          isDisabled={user.isDisabled}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

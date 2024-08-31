@@ -16,6 +16,9 @@ model User {
   sessions  Session[]
   events    Event[]
   logs  Log[]
+
+  isDisabled Boolean @default(false)
+  disabledAt DateTime?
 }
 
 model Session {

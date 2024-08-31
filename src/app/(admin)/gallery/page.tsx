@@ -22,8 +22,6 @@ export default async function Gallery() {
     include: { Event: { select: { title: true } } },
   });
 
-  console.log(images);
-
   return (
     <main className='min-h-screen flex relative flex-col gap-4'>
       <div

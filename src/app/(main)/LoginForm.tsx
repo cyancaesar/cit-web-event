@@ -3,7 +3,7 @@ import { signIn } from '@/action/user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, KeyRound, User } from 'lucide-react';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
 
@@ -16,13 +16,13 @@ export default function LoginForm() {
       action={action}
       className='grid grid-cols-1 gap-8 min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'
     >
-      <div className='text-2xl font-medium'>تسجيل دخول</div>
+      <div className='text-2xl font-medium'>تسجيل الدخول</div>
       <div className='flex flex-col gap-4'>
-        <Label htmlFor='username'>اسم المستخدم</Label>
+        <Label htmlFor='username'>إسم المستخدم</Label>
         <Input
-          dir='ltr'
           autoComplete='off'
-          className='text-end'
+          dir='ltr'
+          className='w-full text-end'
           name='username'
           id='username'
           type='text'
@@ -33,7 +33,7 @@ export default function LoginForm() {
         <div className='relative'>
           <Input
             dir='ltr'
-            className='text-end rtl:pl-12'
+            className='pl-12 text-end'
             name='password'
             type={showPassword ? 'text' : 'password'}
           />

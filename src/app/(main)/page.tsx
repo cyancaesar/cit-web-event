@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
-      <div className='flex flex-col grow items-center justify-between py-4 lg:border-l-4 border-tu-primary'>
+      <div className='flex flex-col grow items-center justify-between py-4 rtl:lg:border-l-4 ltr:lg:border-r-4 border-tu-primary'>
         <div></div>
         {user ? (
           <div className='mx-auto grid w-[350px] gap-8 z-20'>

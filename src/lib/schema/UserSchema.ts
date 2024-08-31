@@ -41,3 +41,13 @@ export const createUserSchema = z
     message: passwordMismatchErrorMessage,
     path: ['confirmPassword'],
   });
+
+export const changePasswordSchema = z
+  .object({
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: passwordMismatchErrorMessage,
+    path: ['confirmPassword'],
+  });
