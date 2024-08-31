@@ -130,6 +130,7 @@ export async function disableUser(id: string) {
     };
 
   if (!existingUser.isDisabled) {
+    // Disable user
     await prisma.user.update({
       where: {
         id: existingUser.id,
@@ -138,6 +139,10 @@ export async function disableUser(id: string) {
         isDisabled: true,
         disabledAt: new Date(),
       },
+    });
+    // Delete all sessions associated with the user
+    await prisma.session.deleteMany({
+      where: { userId: existingUser.id },
     });
     revalidatePath('/user/manage');
     return { message: `تم تعطيل المستخدم ${existingUser.username}` };
@@ -199,9 +204,14 @@ export async function changePassword(id: string, data: any) {
     };
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+  // Update user password
   await prisma.user.update({
     where: { id: existingUser.id },
     data: { password: passwordHash },
+  });
+  // Delete all sessions associated with the user
+  await prisma.session.deleteMany({
+    where: { userId: existingUser.id },
   });
 
   return { message: `تم تغيير كلمة مرور المستخدم ${existingUser.username}` };
