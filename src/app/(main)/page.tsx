@@ -5,13 +5,14 @@ import Link from 'next/link';
 import LoginForm from './LoginForm';
 import { validateRequest } from '@/auth';
 import { signOut } from '@/action/user';
+import Sidebar from '@/components/Sidebar';
 
 export default async function Home() {
   const { user } = await validateRequest();
 
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
-      <div className='flex flex-col grow items-center justify-between py-4 rtl:lg:border-l-4 ltr:lg:border-r-4 border-tu-primary'>
+      <div className='flex flex-col grow items-center justify-between rtl:lg:border-l-4 ltr:lg:border-r-4 border-tu-primary'>
         <div></div>
         {user ? (
           <div className='mx-auto grid w-[350px] gap-8 z-20'>
@@ -20,7 +21,7 @@ export default async function Home() {
                 أنشطة الأندية الطلابية
               </h1>
               <p className='text-balance text-muted-foreground'>
-                خدمات لجنة الأنشطة الطلابية بكلية الحاسبات وتقنية المعلومات
+                خدمات وحدة الأنشطة الطلابية بكلية الحاسبات وتقنية المعلومات
               </p>
             </div>
             <Separator />
@@ -68,32 +69,23 @@ export default async function Home() {
             </div>
           </div>
         ) : (
-          <LoginForm />
+          <>
+            <div className='space-y-8'>
+              <div className='grid gap-2 text-center'>
+                <h1 className='text-3xl font-medium flex items-center gap-2 tracking-tight justify-center'>
+                  منصة الفعاليات والأنشطة الطلابية
+                </h1>
+                <p className='text-balance text-muted-foreground'>
+                  صفحة تسجيل الدخول للمسجلين بالنظام
+                </p>
+              </div>
+              <LoginForm />
+            </div>
+          </>
         )}
         <div></div>
       </div>
-      <div className='hidden lg:flex relative flex-col justify-center items-center'>
-        <div className='z-20 flex flex-col text-3xl items-center text-tu-primary'>
-          <Image
-            className='py-4'
-            src='/assets/logo.png'
-            width={170}
-            height={170}
-            alt='TU logo'
-          />
-          <div className='text-center space-y-1.5 py-4'>
-            <div className='font-medium'>جامعة الطائف</div>
-            <div className='font-medium'>كلية الحاسبات وتقنية المعلومات</div>
-            <div className='font-medium'>لجنة الأنشطة الطلابية</div>
-          </div>
-        </div>
-        <div
-          className='absolute w-full h-full'
-          style={{
-            backgroundImage: "url('/assets/pattern.png')",
-          }}
-        ></div>
-      </div>
+      <Sidebar />
     </main>
   );
 }

@@ -24,6 +24,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CircleCheck, CircleX } from 'lucide-react';
 
 import ManagePopover from './ManagePopover';
+import Sidebar from '@/components/Sidebar';
 
 function formatDate(date: Date) {
   if (isToday(date)) return format(date, 'hh:mm a');
@@ -102,28 +103,7 @@ export default async function ManageUser() {
         </div>
         <div></div>
       </div>
-      <div className='hidden lg:flex relative flex-col justify-center items-center'>
-        <div className='z-20 flex flex-col text-3xl items-center text-tu-primary'>
-          <Image
-            className='py-4'
-            src='/assets/logo.png'
-            width={170}
-            height={170}
-            alt='TU logo'
-          />
-          <div className='text-center space-y-1.5 py-4'>
-            <div className='font-medium'>جامعة الطائف</div>
-            <div className='font-medium'>كلية الحاسبات وتقنية المعلومات</div>
-            <div className='font-medium'>لجنة الأنشطة الطلابية</div>
-          </div>
-        </div>
-        <div
-          className='absolute w-full h-full'
-          style={{
-            backgroundImage: "url('/assets/pattern.png')",
-          }}
-        ></div>
-      </div>
+      <Sidebar />
     </main>
   );
 }

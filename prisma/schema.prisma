@@ -68,8 +68,8 @@ model Event {
 model File {
   id        String   @id @default(cuid())
   objectKey String
-  Event     Event?   @relation(fields: [eventId], references: [id])
   eventId   String?
+  Event     Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

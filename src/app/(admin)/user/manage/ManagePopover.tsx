@@ -5,13 +5,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { MoreHorizontal, UserCheck, UserMinus } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  MoreHorizontal,
+  UserCheck,
+  UserMinus,
+} from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { changePassword, disableUser, enableUser } from '@/action/user';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
 
 type Props = {
   id: string;
@@ -19,10 +24,15 @@ type Props = {
   isDisabled: boolean;
 };
 export default function ManagePopover({ id, username, isDisabled }: Props) {
+  const [type, setType] = useState<'CHANGE_PASSWORD' | 'DISABLE_USER' | null>(
+    null
+  );
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  async function handleSubmission(formData: FormData) {
+  async function handleChangePassword(formData: FormData) {
+    setType('CHANGE_PASSWORD');
     setError('');
     setMessage('');
     const password = formData.get('password');
@@ -38,6 +48,7 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
       onOpenChange={() => {
         setError('');
         setMessage('');
+        setType(null);
       }}
     >
       <PopoverTrigger asChild>
@@ -61,19 +72,34 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
             <div className='text-sm absolute -top-3.5 bg-white'>
               تغيير كلمة المرور
             </div>
-            <form action={handleSubmission}>
+            <form action={handleChangePassword}>
               <div className='grid gap-2'>
                 <div className='grid grid-cols-3 items-center gap-4'>
                   <Label htmlFor='width' className='text-xs'>
                     كلمة المرور
                   </Label>
-                  <Input
-                    dir='ltr'
-                    name='password'
-                    id='password'
-                    type='password'
-                    className='col-span-2 h-8 text-end'
-                  />
+                  <div className='relative col-span-2 '>
+                    <Input
+                      dir='ltr'
+                      name='password'
+                      id='password'
+                      type={showPassword ? 'text' : 'password'}
+                      className='h-8 text-end pl-10'
+                    />
+                    <Button
+                      type='button'
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className='absolute top-0 left-0 h-8'
+                      variant='ghost'
+                      size='icon'
+                    >
+                      {showPassword ? (
+                        <EyeOff className='w-5 h-5' />
+                      ) : (
+                        <Eye className='w-5 h-5' />
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 <div className='grid grid-cols-3 items-center gap-4'>
                   <Label htmlFor='confirmPassword' className='text-xs'>
@@ -83,7 +109,7 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                     dir='ltr'
                     name='confirmPassword'
                     id='confirmPassword'
-                    type='password'
+                    type={showPassword ? 'text' : 'password'}
                     className='col-span-2 h-8 text-end'
                   />
                 </div>
@@ -102,12 +128,12 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                 <div className='grid grid-cols-3 items-center gap-4'>
                   <div></div>
                   <div className='col-span-2'>
-                    {error && (
+                    {type == 'CHANGE_PASSWORD' && error && (
                       <span className='text-destructive font-medium text-xs'>
                         {error}
                       </span>
                     )}
-                    {message && (
+                    {type == 'CHANGE_PASSWORD' && message && (
                       <span className='text-green-600 font-medium text-xs'>
                         {message}
                       </span>
@@ -140,7 +166,12 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                   {isDisabled ? (
                     <div className='flex items-center gap-2'>
                       <Button
-                        onClick={async () => await enableUser(id)}
+                        onClick={async () => {
+                          setType('DISABLE_USER');
+                          const result = await enableUser(id);
+                          if (result.error) setError(result.error);
+                          else if (result.message) setMessage(result.message);
+                        }}
                         className='w-full h-8 text-xs'
                         size='sm'
                         variant='outline'
@@ -151,7 +182,12 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                   ) : (
                     <div className='flex items-center gap-2'>
                       <Button
-                        onClick={async () => await disableUser(id)}
+                        onClick={async () => {
+                          setType('DISABLE_USER');
+                          const result = await disableUser(id);
+                          if (result.error) setError(result.error);
+                          else if (result.message) setMessage(result.message);
+                        }}
                         className='w-full h-8 text-xs'
                         size='sm'
                         variant='outline'
@@ -159,6 +195,21 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                         تعطيل
                       </Button>
                     </div>
+                  )}
+                </div>
+              </div>
+              <div className='grid grid-cols-3 items-center gap-4'>
+                <div></div>
+                <div className='col-span-2'>
+                  {type == 'DISABLE_USER' && error && (
+                    <span className='text-destructive font-medium text-xs'>
+                      {error}
+                    </span>
+                  )}
+                  {type == 'DISABLE_USER' && message && (
+                    <span className='text-green-600 font-medium text-xs'>
+                      {message}
+                    </span>
                   )}
                 </div>
               </div>

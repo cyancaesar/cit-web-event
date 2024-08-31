@@ -3,8 +3,9 @@
 import { validateRequest } from '@/auth';
 import prisma from '@/lib/db';
 import EventSchema from '@/lib/schema/EventSchema';
+import { revalidatePath } from 'next/cache';
 
-export async function registerEvent(data: unknown, s3Objects: string[]) {
+export async function registerEvent(data: unknown, objects: string[]) {
   const { user } = await validateRequest();
 
   if (!user) return { sucess: false, error: 'غير موثق' };
@@ -48,7 +49,7 @@ export async function registerEvent(data: unknown, s3Objects: string[]) {
       date_to: event.date.to,
       files: {
         createMany: {
-          data: s3Objects.map((obj) => {
+          data: objects.map((obj) => {
             return { objectKey: obj };
           }),
         },
@@ -58,4 +59,22 @@ export async function registerEvent(data: unknown, s3Objects: string[]) {
   });
 
   return { sucess: true, error: 'تم تسجيل الفعالية بنجاح' };
+}
+
+export async function deleteEvent(id: string) {
+  const { user } = await validateRequest();
+  if (!user || user.role !== 'admin')
+    return {
+      error: 'غير موثق',
+    };
+
+  const event = await prisma.event.findUnique({ where: { id } });
+  if (!event)
+    return {
+      error: 'لا توجد فعالية',
+    };
+
+  await prisma.event.delete({ where: { id } });
+
+  revalidatePath('/event');
 }

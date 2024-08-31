@@ -16,6 +16,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Ellipsis } from 'lucide-react';
 import { exportDocument } from '@/utils/exportDocument';
+import { deleteEvent } from '@/action/event';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export type Event = EventPrisma;
 
@@ -161,23 +173,51 @@ export const columns: ColumnDef<
     accessorKey: 'actions',
     header: '',
     cell: (cell) => (
-      <DropdownMenu dir='rtl'>
-        <DropdownMenuTrigger>
-          <Ellipsis />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className='ml-2'>
-          <DropdownMenuLabel>عمليات</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={async () => {
-              const event = cell.row.original;
-              exportDocument(event);
-            }}
-          >
-            إصدار نموذج
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <AlertDialog>
+        <DropdownMenu dir='rtl'>
+          <DropdownMenuTrigger>
+            <Ellipsis />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='ml-2'>
+            <DropdownMenuLabel>عمليات</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={async () => {
+                const event = cell.row.original;
+                exportDocument(event);
+              }}
+            >
+              إصدار نموذج
+            </DropdownMenuItem>
+            <AlertDialogTrigger>
+              <DropdownMenuItem>حذف الفعالية</DropdownMenuItem>
+            </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='flex w-full justify-start'>
+              هل أنت متأكد من حذفك للفعالية؟
+            </AlertDialogTitle>
+            <AlertDialogDescription className='flex w-full justify-start'>
+              الصور الخاصة بهذه الفعالية ستبقى محفوظة ويمكنك معاينتها في معرض
+              الصور.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className='flex mx-auto gap-2 pt-4'>
+            <AlertDialogCancel className='px-8'>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                const event = cell.row.original;
+                await deleteEvent(event.id);
+              }}
+              className='px-8'
+            >
+              تأكيد
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     ),
   },
 ];

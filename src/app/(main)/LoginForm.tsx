@@ -16,7 +16,7 @@ export default function LoginForm() {
       action={action}
       className='grid grid-cols-1 gap-8 min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'
     >
-      <div className='text-2xl font-medium'>تسجيل الدخول</div>
+      <div className='text-2xl font-medium'>تسجيل دخول</div>
       <div className='flex flex-col gap-4'>
         <Label htmlFor='username'>إسم المستخدم</Label>
         <Input

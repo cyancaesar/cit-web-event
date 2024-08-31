@@ -129,6 +129,11 @@ export async function disableUser(id: string) {
       error: 'المستخدم غير موجود',
     };
 
+  if (existingUser.role === 'admin')
+    return {
+      error: 'لا يمكن تعطيل مستخدم مدير',
+    };
+
   if (!existingUser.isDisabled) {
     // Disable user
     await prisma.user.update({
