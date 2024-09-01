@@ -27,7 +27,6 @@ export default function ImageViewer({
 
   useEffect(() => {
     const fetchImage = async () => {
-      await new Promise((resolve) => setTimeout(() => resolve(1), 5000));
       const result = await fetch(
         `https://s3.${region}.amazonaws.com/${bucket}/${objectKey}`
       );
