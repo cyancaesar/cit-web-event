@@ -8,15 +8,18 @@ generator client {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  username      String          @unique
-  password      String
-  role          String
-  createdAt     DateTime        @default(now())
-  sessions      Session[]
-  events        Event[]
-  logs          Log[]
-  passwordReset PasswordReset[]
+  id                String              @id @default(cuid())
+  username          String              @unique
+  password          String
+  role              String
+  email             String?
+  emailVerifiedAt   DateTime?
+  createdAt         DateTime            @default(now())
+  sessions          Session[]
+  events            Event[]
+  logs              Log[]
+  passwordReset     PasswordReset[]
+  emailVerification EmailVerification[]
 
   isDisabled Boolean   @default(false)
   disabledAt DateTime?
@@ -26,10 +29,20 @@ model PasswordReset {
   id          String    @id @default(cuid())
   userId      String
   user        User      @relation(references: [id], fields: [userId], onDelete: Cascade)
-  token       String
+  token       String    @unique
   expiresAt   DateTime
   createdAt   DateTime  @default(now())
   visitedAt   DateTime?
+  completedAt DateTime?
+}
+
+model EmailVerification {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(references: [id], fields: [userId], onDelete: Cascade)
+  token       String    @unique
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
   completedAt DateTime?
 }
 

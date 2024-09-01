@@ -1,4 +1,5 @@
 'use server';
+
 import { cookies } from 'next/headers';
 import { lucia, validateRequest } from '@/auth';
 import { redirect } from 'next/navigation';
@@ -239,11 +240,11 @@ export async function resetPasswordRequest(
     };
 
   // Change username to email
-  const existingUser = await prisma.user.findUnique({
-    where: { username: email },
+  const existingUser = await prisma.user.findFirst({
+    where: { email: parsed.data },
   });
 
-  if (!existingUser)
+  if (!existingUser || !existingUser.email)
     return {
       error: 'لا يوجد حساب مربوط بالبريد المدخل',
     };
@@ -269,13 +270,11 @@ export async function resetPasswordRequest(
   <p dir="rtl">لتغيير كلمة المرور، يرجى الضغط على الرابط: <a href="${domain}/password-reset/${passwordReset.token}">${domain}/password-reset/${passwordReset.token}</a></p>
   `;
 
-  // TODO: Work on enabling users to add their email
-  // and verify their email.
   const info = await Mailer.sendMail({
     from: `"${smtpName}" <${smtpUser}>`,
-    to: 'local@mail.local',
+    to: existingUser.email,
     subject: `طلب تغيير كلمة مرور ${domain}`,
-    text: `هذا هو الرمز الفريد: ${passwordReset.token}`,
+    text: `تغيير كلمة المرور ${domain}/verify/${passwordReset.token}`,
     html,
   });
 
@@ -344,4 +343,205 @@ export async function resetPassword(
   });
 
   return { message: 'تم تغيير كلمة المرور، يمكنك العودة لصفحة تسجيل الدخول' };
+}
+
+/**
+ * Add user email
+ * Only used once when the user is FRESH and doesn't have email assigned to their account
+ */
+export async function addEmail(
+  _: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const { user } = await validateRequest();
+  if (!user) return { error: 'غير موثق' };
+
+  const email = formData.get('email');
+
+  const parsed = z.string().email().safeParse(email);
+  if (parsed.error) return { error: 'يجب إدخال بريد إلكتروني صحيح' };
+
+  const existingUser = await prisma.user.findUnique({ where: { id: user.id } });
+
+  if (!existingUser)
+    return {
+      error: 'المستخدم ليس مسجل بالنظام',
+    };
+
+  const usedEmail = await prisma.user.findFirst({
+    where: { email: parsed.data },
+  });
+  if (usedEmail) return { error: 'البريد المدخل غير متاح' };
+
+  if (existingUser.email && existingUser.emailVerifiedAt)
+    return {
+      error: 'يوجد بريد مربوط بالحساب.',
+    };
+
+  // Add email
+  await prisma.user.update({
+    where: { id: existingUser.id },
+    data: { email: parsed.data },
+  });
+
+  // Generate token
+  const token = generateIdFromEntropySize(10);
+  const expiresAt = addHours(new Date(), 1);
+
+  await prisma.emailVerification.deleteMany({
+    where: { userId: existingUser.id },
+  });
+
+  const emailVerification = await prisma.emailVerification.create({
+    data: {
+      token,
+      expiresAt,
+      user: { connect: { id: existingUser.id } },
+    },
+  });
+
+  // Sending email verification link
+  const domain = process.env.BASE_URL!;
+  const smtpName = process.env.SMTP_NAME!;
+  const smtpUser = process.env.SMTP_AUTH_USER!;
+
+  const html = `
+  <h3 dir="rtl">تحقق من البريد الإلكتروني للمستخدم ${existingUser.username}</h3>
+  <p dir="rtl">لإكمال عملية التحقق يرجى الضغط على الرابط: <a href="${domain}/verify/${emailVerification.token}">${domain}/verify/${emailVerification.token}</a></p>
+  `;
+
+  const info = await Mailer.sendMail({
+    from: `"${smtpName}" <${smtpUser}>`,
+    to: parsed.data,
+    subject: `تحقق من بريدك ${domain}`,
+    text: `إكمال عملية التحقق من البريد ${domain}/verify/${emailVerification.token}`,
+    html,
+  });
+
+  return {
+    message: 'تم إرسال رابط تحقق من البريد',
+  };
+}
+
+/**
+ * Change user email
+ */
+export async function changeEmail(
+  _: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const { user } = await validateRequest();
+  if (!user) return { error: 'غير موثق' };
+
+  const email = formData.get('changeEmail');
+
+  const parsed = z.string().email().safeParse(email);
+  if (parsed.error) return { error: 'يجب إدخال بريد إلكتروني صحيح' };
+
+  const existingUser = await prisma.user.findUnique({ where: { id: user.id } });
+
+  if (!existingUser)
+    return {
+      error: 'المستخدم ليس مسجل بالنظام',
+    };
+
+  const usedEmail = await prisma.user.findFirst({
+    where: { email: parsed.data },
+  });
+
+  if (usedEmail) {
+    if (usedEmail.id !== existingUser.id)
+      return { error: 'البريد المدخل غير متاح' };
+  }
+
+  if (existingUser.email === parsed.data) {
+    if (existingUser.emailVerifiedAt)
+      return {
+        error: `البريد ${parsed.data} موثق بالحساب`,
+      };
+    else {
+      // SAME CODE AS BELOW
+      // Generate token
+      const token = generateIdFromEntropySize(10);
+      const expiresAt = addHours(new Date(), 1);
+
+      await prisma.emailVerification.deleteMany({
+        where: { userId: existingUser.id },
+      });
+
+      const emailVerification = await prisma.emailVerification.create({
+        data: {
+          token,
+          expiresAt,
+          user: { connect: { id: existingUser.id } },
+        },
+      });
+
+      // Sending email verification link
+      const domain = process.env.BASE_URL!;
+      const smtpName = process.env.SMTP_NAME!;
+      const smtpUser = process.env.SMTP_AUTH_USER!;
+
+      const html = `
+  <h3 dir="rtl">تحقق من البريد الإلكتروني للمستخدم ${existingUser.username}</h3>
+  <p dir="rtl">لإكمال عملية التحقق يرجى الضغط على الرابط: <a href="${domain}/verify/${emailVerification.token}">${domain}/verify/${emailVerification.token}</a></p>
+  `;
+
+      const info = await Mailer.sendMail({
+        from: `"${smtpName}" <${smtpUser}>`,
+        to: parsed.data,
+        subject: `تحقق من تغيير البريد ${domain}`,
+        text: `إكمال عملية التحقق من البريد ${domain}/verify/${emailVerification.token}`,
+        html,
+      });
+
+      return {
+        message: 'تم إرسال رابط تحقق من البريد مرة اخرى',
+      };
+    }
+  }
+
+  // Add email
+  await prisma.user.update({
+    where: { id: existingUser.id },
+    data: { email: parsed.data },
+  });
+
+  // Generate token
+  const token = generateIdFromEntropySize(10);
+  const expiresAt = addHours(new Date(), 1);
+
+  await prisma.emailVerification.deleteMany({
+    where: { userId: existingUser.id },
+  });
+
+  const emailVerification = await prisma.emailVerification.create({
+    data: {
+      token,
+      expiresAt,
+      user: { connect: { id: existingUser.id } },
+    },
+  });
+
+  // Sending email verification link
+  const domain = process.env.BASE_URL!;
+  const smtpName = process.env.SMTP_NAME!;
+  const smtpUser = process.env.SMTP_AUTH_USER!;
+
+  const html = `
+  <h3 dir="rtl">تحقق من البريد الإلكتروني للمستخدم ${existingUser.username}</h3>
+  <p dir="rtl">لإكمال عملية التحقق يرجى الضغط على الرابط: <a href="${domain}/verify/${emailVerification.token}">${domain}/verify/${emailVerification.token}</a></p>
+  `;
+
+  const info = await Mailer.sendMail({
+    from: `"${smtpName}" <${smtpUser}>`,
+    to: parsed.data,
+    subject: `تحقق من تغيير البريد ${domain}`,
+    text: `إكمال عملية التحقق من البريد ${domain}/verify/${emailVerification.token}`,
+    html,
+  });
+
+  return {
+    message: 'تم إرسال رابط تحقق من البريد',
+  };
 }

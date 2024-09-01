@@ -5,15 +5,66 @@ import LoginForm from './LoginForm';
 import { validateRequest } from '@/auth';
 import { signOut } from '@/action/user';
 import Sidebar from '@/components/Sidebar';
-import Deactivated from '@/components/Deactivated';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { MailPlus } from 'lucide-react';
 
 export default async function Home() {
   const { user } = await validateRequest();
 
+  const AddEmail = () => {
+    return (
+      <Alert className='flex gap-2 shadow-sm'>
+        <div className='mt-0.5'>
+          <MailPlus className='w-4 h-4' />
+        </div>
+        <div>
+          <AlertTitle>أضف بريدك اللإلكتروني</AlertTitle>
+          <AlertDescription>
+            أربط بريدك الإلكتروني بالحساب حتى تتمكن من إسترجاعه في حال فقدان
+            كلمة المرور
+          </AlertDescription>
+        </div>
+        <Button asChild className='mx-auto' variant='outline'>
+          <Link href='/account'>إضافة</Link>
+        </Button>
+      </Alert>
+    );
+  };
+
+  const VerifyEmail = () => {
+    return (
+      <Alert className='flex gap-2 shadow-sm'>
+        <div className='mt-0.5'>
+          <MailPlus className='w-4 h-4' />
+        </div>
+        <div>
+          <AlertTitle>تحقق من بريدك اللإلكتروني</AlertTitle>
+          <AlertDescription>
+            البريد الإلكتروني المربوط بهذا الحساب غير موثق
+          </AlertDescription>
+        </div>
+      </Alert>
+    );
+  };
+
+  const AlertNotification = () => {
+    if (!user?.email) return <AddEmail />;
+    else if (user.email && !user.emailVerifiedAt) return <VerifyEmail />;
+  };
+
   return (
     <main className='w-full flex lg:grid lg:grid-cols-2 min-h-screen'>
-      <div className='flex flex-col grow items-center justify-between rtl:lg:border-l-4 ltr:lg:border-r-4 border-tu-primary'>
-        <div></div>
+      <div className='flex flex-col grow items-center justify-around rtl:lg:border-l-4 ltr:lg:border-r-4 border-tu-primary'>
+        <div className='w-2/3'>
+          {user &&
+            (!user.email ? (
+              <AddEmail />
+            ) : user.email && !user.emailVerifiedAt ? (
+              <VerifyEmail />
+            ) : (
+              <></>
+            ))}
+        </div>
         {user ? (
           <div className='mx-auto grid w-[350px] gap-8 z-20'>
             <div className='grid gap-2 text-center'>
@@ -29,6 +80,11 @@ export default async function Home() {
               <Button asChild>
                 <Link className='font-bold' href='/register-event'>
                   تسجيل الفعاليات
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link className='font-bold' href='/account'>
+                  بيانات الحساب
                 </Link>
               </Button>
               {user.role === 'admin' && (
