@@ -37,7 +37,7 @@ export default function ImageViewer({
       } else setError(true);
     };
     fetchImage();
-  }, []);
+  }, [region, bucket, objectKey]);
 
   return (
     <TooltipProvider>

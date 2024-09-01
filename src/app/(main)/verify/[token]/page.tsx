@@ -3,7 +3,8 @@ import Sidebar from '@/components/Sidebar';
 import { Button } from '@/components/ui/button';
 import Unauthorized from '@/components/Unauthorized';
 import prisma from '@/lib/db';
-import { format, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
+import { format } from 'date-fns-tz';
 import Link from 'next/link';
 import React from 'react';
 import { z } from 'zod';
@@ -62,7 +63,9 @@ export default async function VerifyEmail({ params }: Props) {
                   <p className='tracking-tighter text-muted-foreground'>
                     <span>تم التحقق في </span>
                     <span dir='ltr'>
-                      {format(existingToken.completedAt, 'yyyy/MM/dd HH:mm')}
+                      {format(existingToken.completedAt, 'yyyy/MM/dd HH:mm', {
+                        timeZone: 'Asia/Riyadh',
+                      })}
                     </span>
                   </p>
                 </div>
@@ -94,7 +97,9 @@ export default async function VerifyEmail({ params }: Props) {
                   <p className='tracking-tighter text-muted-foreground'>
                     <span>تاريخ الإنتهاء </span>
                     <span dir='ltr'>
-                      {format(existingToken.expiresAt, 'yyyy/MM/dd HH:mm')}
+                      {format(existingToken.expiresAt, 'yyyy/MM/dd HH:mm', {
+                        timeZone: 'Asia/Riyadh',
+                      })}
                     </span>
                   </p>
                 </div>

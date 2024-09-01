@@ -5,7 +5,7 @@ import PizZip from 'pizzip';
 // import PizZipUtils from 'pizzip/utils';
 import expressionParser from 'docxtemplater/expressions';
 import { saveAs } from 'file-saver';
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import {
   ADVERTISEMENT_PROCESS,
   TADVERTISEMENT_PROCESS,
@@ -73,11 +73,12 @@ export async function exportDocument(event: Event) {
 
   const date =
     event.date_from == event.date_to
-      ? format(event.date_from, 'yyyy/MM/dd')
-      : `${format(event.date_from, 'yyyy/MM/dd')} - ${format(
-          event.date_to,
-          'yyyy/MM/dd'
-        )}`;
+      ? format(event.date_from, 'yyyy/MM/dd', { timeZone: 'Asia/Riyadh' })
+      : `${format(event.date_from, 'yyyy/MM/dd', {
+          timeZone: 'Asia/Riyadh',
+        })} - ${format(event.date_to, 'yyyy/MM/dd', {
+          timeZone: 'Asia/Riyadh',
+        })}`;
 
   const advertisementProcess =
     event.advertisementProcess.length == 0
@@ -139,6 +140,9 @@ export async function exportDocument(event: Event) {
       mimeType:
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     });
-    saveAs(out, `${format(new Date(), 'yyyy-MM-dd-t')}.docx`);
+    saveAs(
+      out,
+      `${format(new Date(), 'yyyy-MM-dd-t', { timeZone: 'Asia/Riyadh' })}.docx`
+    );
   });
 }

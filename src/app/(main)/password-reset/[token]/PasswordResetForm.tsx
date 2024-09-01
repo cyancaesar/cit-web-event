@@ -3,7 +3,8 @@ import { resetPassword } from '@/action/user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { format, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
+import { format } from 'date-fns-tz';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -34,12 +35,12 @@ export default function PasswordResetForm({
         router.refresh();
       } else {
         const delta = expiresAt.getTime() - new Date().getTime();
-        setExpire(format(delta, 'mm:ss'));
+        setExpire(format(delta, 'mm:ss', { timeZone: 'Asia/Riyadh' }));
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expire]);
+  }, [expire, expiresAt, router]);
 
   return (
     <form

@@ -6,7 +6,8 @@ import PasswordResetForm from './PasswordResetForm';
 import prisma from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { format, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
+import { format } from 'date-fns-tz';
 import Deactivated from '@/components/Deactivated';
 
 type Props = {
@@ -69,7 +70,9 @@ export default async function PasswordReset({ params }: Props) {
                   <p className='tracking-tighter text-muted-foreground'>
                     <span>تم إستهلاكه في </span>
                     <span dir='ltr'>
-                      {format(existingToken.completedAt, 'yyyy/MM/dd HH:mm')}
+                      {format(existingToken.completedAt, 'yyyy/MM/dd HH:mm', {
+                        timeZone: 'Asia/Riyadh',
+                      })}
                     </span>
                   </p>
                 </div>
@@ -101,7 +104,9 @@ export default async function PasswordReset({ params }: Props) {
                   <p className='tracking-tighter text-muted-foreground'>
                     <span>تاريخ الإنتهاء </span>
                     <span dir='ltr'>
-                      {format(existingToken.expiresAt, 'yyyy/MM/dd HH:mm')}
+                      {format(existingToken.expiresAt, 'yyyy/MM/dd HH:mm', {
+                        timeZone: 'Asia/Riyadh',
+                      })}
                     </span>
                   </p>
                 </div>

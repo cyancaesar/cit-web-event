@@ -24,15 +24,13 @@ type Props = {
   isDisabled: boolean;
 };
 export default function ManagePopover({ id, username, isDisabled }: Props) {
-  const [type, setType] = useState<'CHANGE_PASSWORD' | 'DISABLE_USER' | null>(
-    null
-  );
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [userTriggerError, setUserTriggerError] = useState('');
+  const [userTriggerMessage, setUserTriggerMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleChangePassword(formData: FormData) {
-    setType('CHANGE_PASSWORD');
     setError('');
     setMessage('');
     const password = formData.get('password');
@@ -43,12 +41,25 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
     else if (result.message) setMessage(result.message);
   }
 
+  async function handleEnableUser() {
+    const result = await enableUser(id);
+    if (result.error) setUserTriggerError(result.error);
+    else if (result.message) setUserTriggerMessage(result.message);
+  }
+
+  async function handleDisableUser() {
+    const result = await disableUser(id);
+    if (result.error) setUserTriggerError(result.error);
+    else if (result.message) setUserTriggerMessage(result.message);
+  }
+
   return (
     <Popover
       onOpenChange={() => {
         setError('');
         setMessage('');
-        setType(null);
+        setUserTriggerError('');
+        setUserTriggerMessage('');
       }}
     >
       <PopoverTrigger asChild>
@@ -128,12 +139,12 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                 <div className='grid grid-cols-3 items-center gap-4'>
                   <div></div>
                   <div className='col-span-2'>
-                    {type == 'CHANGE_PASSWORD' && error && (
+                    {error && (
                       <span className='text-destructive font-medium text-xs'>
                         {error}
                       </span>
                     )}
-                    {type == 'CHANGE_PASSWORD' && message && (
+                    {message && (
                       <span className='text-green-600 font-medium text-xs'>
                         {message}
                       </span>
@@ -166,12 +177,13 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                   {isDisabled ? (
                     <div className='flex items-center gap-2'>
                       <Button
-                        onClick={async () => {
-                          setType('DISABLE_USER');
-                          const result = await enableUser(id);
-                          if (result.error) setError(result.error);
-                          else if (result.message) setMessage(result.message);
-                        }}
+                        // onClick={async () => {
+                        //   setType('DISABLE_USER');
+                        //   const result = await enableUser(id);
+                        //   if (result.error) setError(result.error);
+                        //   else if (result.message) setMessage(result.message);
+                        // }}
+                        onClick={handleEnableUser}
                         className='w-full h-8 text-xs'
                         size='sm'
                         variant='outline'
@@ -182,12 +194,13 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
                   ) : (
                     <div className='flex items-center gap-2'>
                       <Button
-                        onClick={async () => {
-                          setType('DISABLE_USER');
-                          const result = await disableUser(id);
-                          if (result.error) setError(result.error);
-                          else if (result.message) setMessage(result.message);
-                        }}
+                        // onClick={async () => {
+                        //   setType('DISABLE_USER');
+                        //   const result = await disableUser(id);
+                        //   if (result.error) setError(result.error);
+                        //   else if (result.message) setMessage(result.message);
+                        // }}
+                        onClick={handleDisableUser}
                         className='w-full h-8 text-xs'
                         size='sm'
                         variant='outline'
@@ -201,14 +214,14 @@ export default function ManagePopover({ id, username, isDisabled }: Props) {
               <div className='grid grid-cols-3 items-center gap-4'>
                 <div></div>
                 <div className='col-span-2'>
-                  {type == 'DISABLE_USER' && error && (
+                  {userTriggerError && (
                     <span className='text-destructive font-medium text-xs'>
-                      {error}
+                      {userTriggerError}
                     </span>
                   )}
-                  {type == 'DISABLE_USER' && message && (
+                  {userTriggerMessage && (
                     <span className='text-green-600 font-medium text-xs'>
-                      {message}
+                      {userTriggerMessage}
                     </span>
                   )}
                 </div>

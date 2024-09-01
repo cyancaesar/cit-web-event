@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { validateRequest } from '@/auth';
 import Unauthorized from '@/components/Unauthorized';
 import prisma from '@/lib/db';
@@ -10,7 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { format, isToday } from 'date-fns';
+import { isToday } from 'date-fns';
+import { format } from 'date-fns-tz';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,8 +27,9 @@ import ManagePopover from './ManagePopover';
 import Sidebar from '@/components/Sidebar';
 
 function formatDate(date: Date) {
-  if (isToday(date)) return format(date, 'hh:mm a');
-  return format(date, 'yyyy/MM/dd, hh:mm a');
+  if (isToday(date))
+    return format(date, 'hh:mm a', { timeZone: 'Asia/Riyadh' });
+  return format(date, 'yyyy/MM/dd, hh:mm a', { timeZone: 'Asia/Riyadh' });
 }
 
 export default async function ManageUser() {
@@ -36,7 +37,7 @@ export default async function ManageUser() {
   if (!user || user.role !== 'admin') return <Unauthorized />;
 
   const users = await prisma.user.findMany({
-    include: { logs: true },
+    include: { logs: true, events: true },
   });
 
   return (
@@ -74,7 +75,9 @@ export default async function ManageUser() {
                       <TableCell className='text-center'>
                         {user.username}
                       </TableCell>
-                      <TableCell className='text-center'>0</TableCell>
+                      <TableCell className='text-center'>
+                        {user.events.length}
+                      </TableCell>
                       <TableCell dir='ltr' className='text-center'>
                         {user.logs.length > 0
                           ? formatDate(user.logs.at(-1)?.createdAt!)

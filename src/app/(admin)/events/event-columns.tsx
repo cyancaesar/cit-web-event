@@ -2,7 +2,7 @@
 
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Event as EventPrisma } from '@prisma/client';
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import { EVENT_TYPE, KEVENT_TYPE } from '@/constants/eventType';
 import { KWORKTEAM, WORKTEAM } from '@/constants/workTeam';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -83,14 +83,22 @@ export const columns: ColumnDef<
     columns: [
       columnHelper.accessor('date_from', {
         cell: (cell) => (
-          <span>{format(cell.row.original.date_from, 'yyyy/MM/dd')}</span>
+          <span>
+            {format(cell.row.original.date_from, 'yyyy/MM/dd', {
+              timeZone: 'Asia/Riyadh',
+            })}
+          </span>
         ),
         header: () => <span>من</span>,
         footer: (props) => props.column.id,
       }),
       columnHelper.accessor('date_to', {
         cell: (cell) => (
-          <span>{format(cell.row.original.date_to, 'yyyy/MM/dd')}</span>
+          <span>
+            {format(cell.row.original.date_to, 'yyyy/MM/dd', {
+              timeZone: 'Asia/Riyadh',
+            })}
+          </span>
         ),
         header: () => <span>إلى</span>,
         footer: (props) => props.column.id,

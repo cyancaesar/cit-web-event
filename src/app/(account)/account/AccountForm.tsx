@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useFormState, useFormStatus } from 'react-dom';
@@ -130,7 +130,11 @@ export default function AccountForm({
               <span className='text-xs font-medium flex items-center'>
                 <CheckCircle2 className='w-4 h-4 ml-2' />
                 تم التحقق من البريد في{' '}
-                <span dir='ltr'>{format(emailVerifiedAt, 'yyyy/MM/dd')}</span>
+                <span dir='ltr'>
+                  {format(emailVerifiedAt, 'yyyy/MM/dd', {
+                    timeZone: 'Asia/Riyadh',
+                  })}
+                </span>
               </span>
             ) : (
               <span className='text-xs font-medium'>البريد غير موثق</span>

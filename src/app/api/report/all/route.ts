@@ -15,7 +15,8 @@ import {
   TextRun,
   WidthType,
 } from 'docx';
-import { endOfYear, format } from 'date-fns';
+import { endOfYear } from 'date-fns';
+import { format } from 'date-fns-tz';
 import { createActivitiesTable } from '@/utils/ActivityTable';
 import { validateRequest } from '@/auth';
 import { z } from 'zod';
@@ -195,7 +196,8 @@ async function generateAllReport(year: number) {
                               new TextRun({
                                 text: `${format(
                                   new Date(),
-                                  'yyyy/MM/dd HH:mm'
+                                  'yyyy/MM/dd HH:mm',
+                                  { timeZone: 'Asia/Riyadh' }
                                 )}`,
                               }),
                             ],

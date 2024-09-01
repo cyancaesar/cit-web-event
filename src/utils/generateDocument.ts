@@ -5,7 +5,7 @@ import PizZip from 'pizzip';
 // import PizZipUtils from 'pizzip/utils';
 import expressionParser from 'docxtemplater/expressions';
 import { saveAs } from 'file-saver';
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import EventSchema from '@/lib/schema/EventSchema';
 import { z } from 'zod';
 import {
@@ -85,11 +85,12 @@ export async function generateDocument(obj: z.infer<typeof EventSchema>) {
         .join(' - '),
       date:
         obj.date.from == obj.date.to
-          ? format(obj.date.from, 'yyyy/MM/dd')
-          : `${format(obj.date.from, 'yyyy/MM/dd')} - ${format(
-              obj.date.to,
-              'yyyy/MM/dd'
-            )}`,
+          ? format(obj.date.from, 'yyyy/MM/dd', { timeZone: 'Asia/Riyadh' })
+          : `${format(obj.date.from, 'yyyy/MM/dd', {
+              timeZone: 'Asia/Riyadh',
+            })} - ${format(obj.date.to, 'yyyy/MM/dd', {
+              timeZone: 'Asia/Riyadh',
+            })}`,
       place: obj.place,
       time: obj.time,
       male: obj.maleAttendees,
@@ -126,6 +127,9 @@ export async function generateDocument(obj: z.infer<typeof EventSchema>) {
       mimeType:
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     });
-    saveAs(out, `${format(new Date(), 'yyyy-MM-dd-t')}.docx`);
+    saveAs(
+      out,
+      `${format(new Date(), 'yyyy-MM-dd-t', { timeZone: 'Asia/Riyadh' })}.docx`
+    );
   });
 }

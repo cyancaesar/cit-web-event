@@ -12,7 +12,7 @@ import {
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { generateIdFromEntropySize } from 'lucia';
-import { addHours, isAfter } from 'date-fns';
+import { addHours, addMinutes, isAfter } from 'date-fns';
 import Mailer from '@/lib/mailer';
 
 interface ActionResult {
@@ -250,7 +250,7 @@ export async function resetPasswordRequest(
     };
 
   const token = generateIdFromEntropySize(10);
-  const expiresAt = addHours(new Date(), 1);
+  const expiresAt = addMinutes(new Date(), 2);
 
   await prisma.passwordReset.deleteMany({ where: { userId: existingUser.id } });
 
