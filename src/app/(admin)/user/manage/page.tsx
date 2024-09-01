@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { isToday } from 'date-fns';
-import { format } from 'date-fns-tz';
+import { format, toZonedTime } from 'date-fns-tz';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,9 +27,9 @@ import ManagePopover from './ManagePopover';
 import Sidebar from '@/components/Sidebar';
 
 function formatDate(date: Date) {
-  if (isToday(date))
-    return format(date, 'hh:mm a', { timeZone: 'Asia/Riyadh' });
-  return format(date, 'yyyy/MM/dd, hh:mm a', { timeZone: 'Asia/Riyadh' });
+  const zonedTime = toZonedTime(date, 'Asia/Riyadh');
+  if (isToday(zonedTime)) return format(zonedTime, 'hh:mm a');
+  return format(zonedTime, 'yyyy/MM/dd, hh:mm a');
 }
 
 export default async function ManageUser() {
