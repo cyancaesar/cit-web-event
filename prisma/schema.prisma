@@ -8,17 +8,29 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  username  String    @unique
-  password  String
-  role      String
-  createdAt DateTime  @default(now())
-  sessions  Session[]
-  events    Event[]
-  logs  Log[]
+  id            String          @id @default(cuid())
+  username      String          @unique
+  password      String
+  role          String
+  createdAt     DateTime        @default(now())
+  sessions      Session[]
+  events        Event[]
+  logs          Log[]
+  passwordReset PasswordReset[]
 
-  isDisabled Boolean @default(false)
+  isDisabled Boolean   @default(false)
   disabledAt DateTime?
+}
+
+model PasswordReset {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(references: [id], fields: [userId], onDelete: Cascade)
+  token       String
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  visitedAt   DateTime?
+  completedAt DateTime?
 }
 
 model Session {

@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import Image from 'next/image';
 import Link from 'next/link';
 import LoginForm from './LoginForm';
 import { validateRequest } from '@/auth';
 import { signOut } from '@/action/user';
 import Sidebar from '@/components/Sidebar';
+import Deactivated from '@/components/Deactivated';
 
 export default async function Home() {
   const { user } = await validateRequest();
@@ -76,7 +76,7 @@ export default async function Home() {
                   منصة الفعاليات والأنشطة الطلابية
                 </h1>
                 <p className='text-balance text-muted-foreground'>
-                  صفحة تسجيل الدخول للمسجلين بالنظام
+                  تسجيل الدخول للمسجلين بالنظام
                 </p>
               </div>
               <LoginForm />

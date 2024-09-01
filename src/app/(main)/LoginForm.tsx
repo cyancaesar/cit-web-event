@@ -3,7 +3,8 @@ import { signIn } from '@/action/user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, KeyRound, User } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
 
@@ -52,10 +53,17 @@ export default function LoginForm() {
           </Button>
         </div>
       </div>
-      <Button>دخول</Button>
-      <div className='text-center text-destructive text-xs font-bold'>
-        {state.error}
+      <div className='flex flex-col gap-2'>
+        <Button type='submit'>دخول</Button>
+        <Button variant='ghost' asChild>
+          <Link href='/password-reset'>إعادة تعيين كلمة المرور</Link>
+        </Button>
       </div>
+      {state.error && (
+        <div className='text-center text-destructive text-xs font-bold'>
+          {state.error}
+        </div>
+      )}
     </form>
   );
 }

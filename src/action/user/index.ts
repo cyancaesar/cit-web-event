@@ -9,6 +9,10 @@ import {
   createUserSchema,
 } from '@/lib/schema/UserSchema';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { generateIdFromEntropySize } from 'lucia';
+import { addHours, isAfter } from 'date-fns';
+import Mailer from '@/lib/mailer';
 
 interface ActionResult {
   error?: string;
@@ -220,4 +224,124 @@ export async function changePassword(id: string, data: any) {
   });
 
   return { message: `تم تغيير كلمة مرور المستخدم ${existingUser.username}` };
+}
+
+export async function resetPasswordRequest(
+  _: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const email = formData.get('email') as string;
+  const parsed = z.string().safeParse(email);
+
+  if (parsed.error)
+    return {
+      error: 'يجب إدخال بريد إلكتروني صحيح',
+    };
+
+  // Change username to email
+  const existingUser = await prisma.user.findUnique({
+    where: { username: email },
+  });
+
+  if (!existingUser)
+    return {
+      error: 'لا يوجد حساب مربوط بالبريد المدخل',
+    };
+
+  const token = generateIdFromEntropySize(10);
+  const expiresAt = addHours(new Date(), 1);
+
+  await prisma.passwordReset.deleteMany({ where: { userId: existingUser.id } });
+
+  const passwordReset = await prisma.passwordReset.create({
+    data: {
+      token,
+      expiresAt,
+      user: { connect: { id: existingUser.id } },
+    },
+  });
+
+  const domain = process.env.BASE_URL!;
+  const smtpName = process.env.SMTP_NAME!;
+  const smtpUser = process.env.SMTP_AUTH_USER!;
+  const html = `
+  <h3 dir="rtl">طلب تغيير كلمة مرور للمستخدم ${existingUser.username}</h3>
+  <p dir="rtl">لتغيير كلمة المرور، يرجى الضغط على الرابط: <a href="${domain}/password-reset/${passwordReset.token}">${domain}/password-reset/${passwordReset.token}</a></p>
+  `;
+
+  // TODO: Work on enabling users to add their email
+  // and verify their email.
+  const info = await Mailer.sendMail({
+    from: `"${smtpName}" <${smtpUser}>`,
+    to: 'local@mail.local',
+    subject: `طلب تغيير كلمة مرور ${domain}`,
+    text: `هذا هو الرمز الفريد: ${passwordReset.token}`,
+    html,
+  });
+
+  return {
+    message: 'تم إرسال رابط تغيير كلمة المرور',
+  };
+}
+
+export async function resetPassword(
+  _: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const password = formData.get('password');
+  const confirmPassword = formData.get('confirmPassword');
+  const token = formData.get('token');
+
+  const parsedToken = z.string().min(4).max(64).safeParse(token);
+  if (parsedToken.error)
+    return {
+      error: 'لا يوجد رابط تغيير كلمة مرور',
+    };
+
+  const existingToken = await prisma.passwordReset.findFirst({
+    where: { token: parsedToken.data },
+  });
+
+  if (!existingToken)
+    return {
+      error: 'لا يوجد رابط تغيير كلمة مرور',
+    };
+
+  if (existingToken.completedAt)
+    return { error: 'تم إستهلاك رابط تغيير كلمة المرور' };
+
+  if (isAfter(new Date(), existingToken.expiresAt))
+    return { error: 'إنتهت صلاحية رابط تغيير المرور' };
+
+  const parsed = changePasswordSchema.safeParse({ password, confirmPassword });
+
+  if (parsed.error) {
+    if (parsed.error.issues.length > 0) {
+      return { error: parsed.error.issues.at(0)?.message };
+    }
+    return { error: 'خطأ في التحقق من البيانات' };
+  }
+
+  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+
+  // Change the user password
+  // and update completedAt field
+  await prisma.user.update({
+    where: { id: existingToken.userId },
+    data: {
+      password: passwordHash,
+      passwordReset: {
+        update: {
+          where: { id: existingToken.id },
+          data: { completedAt: new Date() },
+        },
+      },
+    },
+  });
+  // Delete all sessions associated with the user
+  await prisma.session.deleteMany({
+    where: { userId: existingToken.userId },
+  });
+
+  return { message: 'تم تغيير كلمة المرور، يمكنك العودة لصفحة تسجيل الدخول' };
 }
