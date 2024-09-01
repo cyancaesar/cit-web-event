@@ -18,7 +18,7 @@ export default async function Home() {
           <MailPlus className='w-4 h-4' />
         </div>
         <div>
-          <AlertTitle>أضف بريدك اللإلكتروني</AlertTitle>
+          <AlertTitle>أضف بريدك الإلكتروني</AlertTitle>
           <AlertDescription>
             أربط بريدك الإلكتروني بالحساب حتى تتمكن من إسترجاعه في حال فقدان
             كلمة المرور
@@ -38,18 +38,13 @@ export default async function Home() {
           <MailPlus className='w-4 h-4' />
         </div>
         <div>
-          <AlertTitle>تحقق من بريدك اللإلكتروني</AlertTitle>
+          <AlertTitle>تحقق من بريدك الإلكتروني</AlertTitle>
           <AlertDescription>
             البريد الإلكتروني المربوط بهذا الحساب غير موثق
           </AlertDescription>
         </div>
       </Alert>
     );
-  };
-
-  const AlertNotification = () => {
-    if (!user?.email) return <AddEmail />;
-    else if (user.email && !user.emailVerifiedAt) return <VerifyEmail />;
   };
 
   return (

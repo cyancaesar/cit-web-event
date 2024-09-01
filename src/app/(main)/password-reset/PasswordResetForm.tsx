@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoaderCircle } from 'lucide-react';
+import Link from 'next/link';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function Submit() {
@@ -44,6 +45,9 @@ export default function PasswordResetForm() {
       </div>
       <div className='flex flex-col gap-2'>
         <Submit />
+        <Button variant='ghost' asChild>
+          <Link href='/'>الرجوع للصفحة الرئيسية</Link>
+        </Button>
       </div>
       {state.error && (
         <div className='text-center text-destructive text-xs font-bold'>

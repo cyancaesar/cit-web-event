@@ -1,5 +1,6 @@
 import Sidebar from '@/components/Sidebar';
 import PasswordResetForm from './PasswordResetForm';
+import Link from 'next/link';
 
 export default function PasswordReset() {
   return (
