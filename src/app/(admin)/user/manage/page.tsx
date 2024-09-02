@@ -28,7 +28,7 @@ import Sidebar from '@/components/Sidebar';
 
 function formatDate(date: Date) {
   const zonedTime = toZonedTime(date, 'Asia/Riyadh');
-  if (isToday(zonedTime)) return format(zonedTime, 'hh:mm a');
+  if (isToday(date)) return format(zonedTime, 'hh:mm a');
   return format(zonedTime, 'yyyy/MM/dd, hh:mm a');
 }
 
