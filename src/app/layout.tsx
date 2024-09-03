@@ -45,8 +45,38 @@ const dinPro = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'الأنشطة الطلابية | جامعة الطائف',
-  description: 'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات',
+  title: 'الأنشطة الطلابية - جامعة الطائف',
+  description: 'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
+
+  keywords:
+    'الأنشطة الطلابية, جامعة الطائف, كلية الحاسبات وتقنية المعلومات, طلاب جامعة الطائف',
+  robots: 'index, follow',
+
+  openGraph: {
+    title: 'الأنشطة الطلابية - جامعة الطائف',
+    description:
+      'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
+    url: 'https://tu.noor.cx', // Replace with your actual URL
+    type: 'website',
+    images: [
+      {
+        url: 'https://tu.noor.cx/assets/logo.png', // Replace with your image URL
+        width: 800,
+        height: 600,
+        alt: 'الأنشطة الطلابية بجامعة الطائف',
+      },
+    ],
+  },
+
+  // Twitter Card metadata for Twitter sharing
+  twitter: {
+    card: 'summary_large_image',
+    site: '@your_twitter_handle', // Replace with your Twitter handle
+    title: 'الأنشطة الطلابية - جامعة الطائف',
+    description:
+      'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
+    images: 'https://tu.noor.cx/assets/logo.png', // Replace with your image URL
+  },
 };
 
 export default function RootLayout({

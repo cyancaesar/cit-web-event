@@ -1,6 +1,13 @@
-import { validateRequest } from '@/auth';
-import Unauthorized from '@/components/Unauthorized';
+import { isToday } from 'date-fns';
+import { format, toZonedTime } from 'date-fns-tz';
+import { CircleCheck, CircleX } from 'lucide-react';
+
+import Link from 'next/link';
 import prisma from '@/lib/db';
+import { validateRequest } from '@/auth';
+import Sidebar from '@/components/Sidebar';
+import Unauthorized from '@/components/Unauthorized';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -9,8 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { isToday } from 'date-fns';
-import { format, toZonedTime } from 'date-fns-tz';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,12 +24,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import Link from 'next/link';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { CircleCheck, CircleX } from 'lucide-react';
 
 import ManagePopover from './ManagePopover';
-import Sidebar from '@/components/Sidebar';
 
 function formatDate(date: Date) {
   const zonedTime = toZonedTime(date, 'Asia/Riyadh');
