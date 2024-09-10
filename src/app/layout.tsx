@@ -56,11 +56,11 @@ export const metadata: Metadata = {
     title: 'الأنشطة الطلابية - جامعة الطائف',
     description:
       'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
-    url: 'https://tu.noor.cx', // Replace with your actual URL
+    url: 'https://tu.noor.cx',
     type: 'website',
     images: [
       {
-        url: 'https://tu.noor.cx/assets/logo.png', // Replace with your image URL
+        url: 'https://tu.noor.cx/assets/logo.png',
         width: 800,
         height: 600,
         alt: 'الأنشطة الطلابية بجامعة الطائف',
@@ -68,14 +68,13 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Twitter Card metadata for Twitter sharing
   twitter: {
     card: 'summary_large_image',
-    site: '@your_twitter_handle', // Replace with your Twitter handle
+    site: '@your_twitter_handle',
     title: 'الأنشطة الطلابية - جامعة الطائف',
     description:
       'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
-    images: 'https://tu.noor.cx/assets/logo.png', // Replace with your image URL
+    images: 'https://tu.noor.cx/assets/logo.png',
   },
 };
 

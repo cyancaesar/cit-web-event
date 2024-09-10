@@ -28,7 +28,7 @@ export async function signIn(
   const password = formData.get('password') as string;
 
   const existingUser = await prisma.user.findUnique({
-    where: { username },
+    where: { username: username.toLowerCase() },
   });
 
   if (!existingUser)
@@ -95,26 +95,33 @@ export async function createUser(
   const password = formData.get('password') as string;
   const confirmPassword = formData.get('confirmPassword') as string;
 
-  const data = createUserSchema.safeParse({
+  const parsed = createUserSchema.safeParse({
     username,
     password,
     confirmPassword,
   });
 
-  if (data.error) {
-    if (data.error.issues.length > 0) {
-      return { error: data.error.issues.at(0)?.message };
+  if (parsed.error) {
+    if (parsed.error.issues.length > 0) {
+      return { error: parsed.error.issues.at(0)?.message };
     }
     return { error: 'خطأ في التحقق من البيانات' };
   }
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const data = parsed.data;
+  const passwordHash = await bcrypt.hash(data.password, 10);
 
-  const existingUser = await prisma.user.findUnique({ where: { username } });
+  const existingUser = await prisma.user.findUnique({
+    where: { username: data.username.toLowerCase() },
+  });
   if (existingUser) return { error: 'إسم المستخدم غير متاح' };
 
   const createdUser = await prisma.user.create({
-    data: { username, password: passwordHash, role: 'user' },
+    data: {
+      username: data.username.toLowerCase(),
+      password: passwordHash,
+      role: 'user',
+    },
   });
 
   return { message: `تم إنشاء المستخدم ${createdUser.username}` };
