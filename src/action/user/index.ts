@@ -239,7 +239,7 @@ export async function resetPasswordRequest(
   formData: FormData
 ): Promise<ActionResult> {
   const email = formData.get('email') as string;
-  const parsed = z.string().safeParse(email);
+  const parsed = z.string().email().safeParse(email);
 
   if (parsed.error)
     return {
