@@ -61,7 +61,7 @@ export default function AccountForm({
   });
 
   return (
-    <div className='grid grid-cols-1 gap-8 min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'>
+    <div className='grid grid-cols-1 gap-8 min-w-[350px] lg:min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'>
       <div className='text-2xl font-medium'>بيانات الحساب</div>
       <div className='flex flex-col gap-4'>
         <Label>اسم المستخدم</Label>

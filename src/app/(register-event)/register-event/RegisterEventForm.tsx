@@ -366,13 +366,13 @@ export default function RegisterEventForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='grid py-8 gap-4'
+          className='grid py-8 lg:gap-4 gap-8'
         >
           <FormField
             control={form.control}
             name='title'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>عنوان الفعالية/البرنامج/الورشة التدريبية</FormLabel>
                 <FormControl>
                   <Input placeholder='ادخل العنوان' {...field} />
@@ -385,7 +385,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='organizer'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>الجهة المنفذة</FormLabel>
                 <Select
                   dir='rtl'
@@ -411,7 +411,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='departments'
             render={() => (
-              <FormItem className='grid grid-cols-2 items-center py-2'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2'>
                 <FormLabel>اسم القسم الأكاديمي بالكلية</FormLabel>
                 <div className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'>
                   {departments.map((item) => (
@@ -439,7 +439,7 @@ export default function RegisterEventForm() {
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className='font-normal'>
+                            <FormLabel className='font-normal text-nowrap'>
                               {item.label}
                             </FormLabel>
                           </FormItem>
@@ -456,7 +456,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='date'
             render={({ field, fieldState }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>اليوم / التاريخ</FormLabel>
                 <Popover modal={true}>
                   <PopoverTrigger asChild>
@@ -510,7 +510,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='place'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>المكان</FormLabel>
                 <FormControl>
                   <Input placeholder='المكان' {...field} />
@@ -523,7 +523,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='time'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>التوقيت</FormLabel>
                 <FormControl>
                   <Input placeholder='التوقيت' {...field} />
@@ -536,7 +536,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='targetAudience'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>الفئة المستهدفة</FormLabel>
                 <Select
                   dir='rtl'
@@ -562,7 +562,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='registrationProcess'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center py-2'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2'>
                 <FormLabel>آلية التسجيل</FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -593,7 +593,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='advertisementProcess'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center py-2'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2'>
                 <FormLabel>آلية الإعلان</FormLabel>
                 <div className='grid grid-cols-3 space-x-4 rtl:space-x-reverse'>
                   {advertisementProcess.map((item) => (
@@ -621,7 +621,7 @@ export default function RegisterEventForm() {
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className='font-normal'>
+                            <FormLabel className='font-normal text-nowrap'>
                               {item.label}
                             </FormLabel>
                           </FormItem>
@@ -638,7 +638,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='instructorsAndGuests'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>المدربين / الضيوف</FormLabel>
                 <FormControl>
                   <Input placeholder='المدربين / الضيوف' {...field} />
@@ -648,14 +648,14 @@ export default function RegisterEventForm() {
             )}
           />
 
-          <div className='grid grid-cols-2 items-start py-2'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-0 items-start py-2'>
             <Label>عدد الحضور / المستفيدين</Label>
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col lg:gap-2 gap-4'>
               <FormField
                 control={form.control}
                 name='maleAttendees'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-2 items-center'>
+                  <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                     <FormLabel>طلاب</FormLabel>
                     <FormControl>
                       <Input className='text-center' {...field} />
@@ -668,7 +668,7 @@ export default function RegisterEventForm() {
                 control={form.control}
                 name='femaleAttendees'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-2 items-center'>
+                  <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                     <FormLabel>طالبات</FormLabel>
                     <FormControl>
                       <Input className='text-center' {...field} />
@@ -681,7 +681,7 @@ export default function RegisterEventForm() {
                 control={form.control}
                 name='otherAttendees'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-2 items-center'>
+                  <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                     <FormLabel>أخرى من منسوبي الجامعة</FormLabel>
                     <FormControl>
                       <Input className='text-center' {...field} />
@@ -697,7 +697,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='type'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>نوع الفعالية</FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -734,7 +734,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='category'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-0 items-center'>
                 <FormLabel>فئة الفعالية</FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -925,7 +925,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='eventGoals'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-start'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-start'>
                 <FormLabel>أهداف الفعالية/البرنامج</FormLabel>
                 <FormControl>
                   <Textarea
@@ -941,7 +941,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='eventPlanning'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-start'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-start'>
                 <FormLabel>التخطيط والإعداد للفعالية/البرنامج</FormLabel>
                 <FormControl>
                   <Textarea placeholder='كيف تم التخطيط؟' {...field} />
@@ -954,7 +954,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='eventTiming'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-start'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-start'>
                 <FormLabel>الجدول الزمني والتنفيذ للفعالية</FormLabel>
                 <FormControl>
                   <Textarea
@@ -970,7 +970,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='eventFeedbacks'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-start'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-start'>
                 <FormLabel>
                   تقييم الفعالية (نتائج استطلاع الرأي،آراء وانطباعات)
                 </FormLabel>
@@ -988,7 +988,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='enhancePriority'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-start'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-start'>
                 <FormLabel>أوليات التحسين</FormLabel>
                 <FormControl>
                   <Textarea placeholder='أوليات التحسين' {...field} />
@@ -1002,7 +1002,7 @@ export default function RegisterEventForm() {
             control={form.control}
             name='workTeam'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2 items-center'>
+              <FormItem className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-center'>
                 <FormLabel>فريق العمل</FormLabel>
                 <Select
                   dir='rtl'
@@ -1037,7 +1037,7 @@ export default function RegisterEventForm() {
             )}
           />
 
-          <div className='grid grid-cols-2 items-center'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-0 gap-2 items-center'>
             <Label>
               ملحق التغطية الإعلامية{' '}
               <span className='text-muted-foreground mr-2'>(ان وجد)</span>

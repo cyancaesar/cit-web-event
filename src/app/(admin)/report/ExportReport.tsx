@@ -50,7 +50,7 @@ export default function ExportReport({ years }: Props) {
   };
 
   return (
-    <Card className='w-[450px] border-t-4 border-t-tu-primary'>
+    <Card className='min-w-[350px] lg:min-w-[450px] border-t-4 border-t-tu-primary'>
       <CardHeader className='py-8 pb-4'>
         <CardTitle className='font-medium'>
           إصدار تقرير الفعاليات السنوية

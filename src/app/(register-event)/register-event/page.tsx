@@ -18,8 +18,8 @@ export default async function RegisterEvent() {
 
   return (
     <main className='min-h-screen flex relative'>
-      <div className=' z-20 mx-auto py-8'>
-        <Card className='z-20 min-w-[800px] border-t-4 border-t-tu-primary'>
+      <div className=' z-20 mx-auto py-8 px-1.5 lg:px-0'>
+        <Card className='z-20 lg:min-w-[800px] border-t-4 border-t-tu-primary'>
           <div className='flex justify-between'>
             <CardHeader className='space-y-2.5'>
               <CardTitle className='font-medium text-tu-primary'>

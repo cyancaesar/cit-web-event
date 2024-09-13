@@ -7,7 +7,7 @@ import prisma from '@/lib/db';
 import { validateRequest } from '@/auth';
 import Sidebar from '@/components/Sidebar';
 import Unauthorized from '@/components/Unauthorized';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -102,6 +102,7 @@ export default async function ManageUser() {
                   ))}
                 </TableBody>
               </Table>
+              <ScrollBar orientation='horizontal' />
             </ScrollArea>
           </div>
         </div>

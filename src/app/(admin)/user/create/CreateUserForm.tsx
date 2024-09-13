@@ -14,7 +14,7 @@ export default function CreateUserForm() {
   return (
     <form
       action={action}
-      className='grid grid-cols-1 gap-8 min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'
+      className='grid grid-cols-1 gap-8 min-w-[350px] lg:min-w-[450px] rounded-md shadow-md border border-t-4 border-t-tu-primary p-8'
     >
       <div className='flex flex-col gap-2'>
         <div className='text-2xl font-medium'>إنشاء مستخدم</div>

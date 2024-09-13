@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    site: '@your_twitter_handle',
+    site: '@TaifUniversity',
     title: 'الأنشطة الطلابية - جامعة الطائف',
     description:
       'أنشطة الطلابية بكلية الحاسبات وتقنية المعلومات بجامعة الطائف.',
