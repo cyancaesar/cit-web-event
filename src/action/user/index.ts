@@ -257,7 +257,7 @@ export async function resetPasswordRequest(
     };
 
   const token = generateIdFromEntropySize(10);
-  const expiresAt = addMinutes(new Date(), 2);
+  const expiresAt = addMinutes(new Date(), 30);
 
   await prisma.passwordReset.deleteMany({ where: { userId: existingUser.id } });
 
