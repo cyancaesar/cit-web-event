@@ -64,7 +64,7 @@ export default async function Home() {
           <div className='mx-auto grid w-[350px] gap-8 z-20'>
             <div className='grid gap-2 text-center'>
               <h1 className='text-3xl font-medium flex items-center gap-2 tracking-tight justify-center'>
-                أنشطة الأندية الطلابية
+                منصة تقارير الفعاليات
               </h1>
               <p className='text-balance text-muted-foreground'>
                 خدمات وحدة الأنشطة الطلابية بكلية الحاسبات وتقنية المعلومات
@@ -124,7 +124,7 @@ export default async function Home() {
             <div className='space-y-8'>
               <div className='grid gap-2 text-center'>
                 <h1 className='text-3xl font-medium flex items-center gap-2 tracking-tight justify-center'>
-                  منصة الفعاليات والأنشطة الطلابية
+                  منصة تقارير الفعاليات
                 </h1>
                 <p className='text-balance text-muted-foreground'>
                   تسجيل الدخول للمسجلين بالنظام

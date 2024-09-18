@@ -61,6 +61,7 @@ export async function registerEvent(data: unknown, objects: string[]) {
   return { sucess: true, error: 'تم تسجيل الفعالية بنجاح' };
 }
 
+// TODO: mark as deleted instead of actually deleting record.
 export async function deleteEvent(id: string) {
   const { user } = await validateRequest();
   if (!user || user.role !== 'admin')
@@ -68,13 +69,13 @@ export async function deleteEvent(id: string) {
       error: 'غير موثق',
     };
 
-  const event = await prisma.event.findUnique({ where: { id } });
-  if (!event)
-    return {
-      error: 'لا توجد فعالية',
-    };
+  // const event = await prisma.event.findUnique({ where: { id } });
+  // if (!event)
+  //   return {
+  //     error: 'لا توجد فعالية',
+  //   };
 
-  await prisma.event.delete({ where: { id } });
+  // await prisma.event.delete({ where: { id } });
 
-  revalidatePath('/event');
+  // revalidatePath('/event');
 }
