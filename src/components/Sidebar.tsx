@@ -18,7 +18,13 @@ export default function Sidebar() {
           <div className='font-medium'>وحدة الأنشطة الطلابية</div>
         </div>
       </div>
-      <div></div>
+      <div className='z-20'>
+        {process.env.NEXT_PUBLIC_POWERED_BY && (
+          <div className='py-2 text-lg font-bold bg-gradient-to-b to-neutral-300 via-primary from-primary bg-clip-text text-transparent'>
+            POWERED BY {process.env.NEXT_PUBLIC_POWERED_BY}
+          </div>
+        )}
+      </div>
       <div
         className='absolute w-full h-full'
         style={{
