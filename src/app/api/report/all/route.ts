@@ -212,7 +212,7 @@ async function generateAllReport(year: number) {
                             alignment: 'end',
                             children: [
                               new TextRun({
-                                text: `تم إنشاء هذا التقرير من dev.noor.cx`,
+                                text: `تم إصدار هذا التقرير من tu.noor.cx`,
                                 rightToLeft: true,
                               }),
                             ],
